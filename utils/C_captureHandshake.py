@@ -15,18 +15,19 @@ import shutil
 import sys
 import signal
 import threading
-from X_requirements import check_installation
+from X_requirement import check_installation
 requirements_satisfied = check_installation()
 
 # Console colors
-W = '\033[0m'  # white (normal)
-R = '\033[31m'  # red
-G = '\033[32m'  # green
-O = '\033[33m'  # orange
-B = '\033[34m'  # blue
-P = '\033[35m'  # purple
-C = '\033[36m'  # cyan
-GR = '\033[37m'  # gray
+W = '\033[37m'          # white (normal)
+GR = '\033[32m'         # white (normal)
+R = '\033[31m'          # red
+G = '\033[32m'          # green
+O = '\033[38;5;208m'    # orange
+Y = '\033[33m'          # Yellow
+B = '\033[34m'          # blue
+P = '\033[35m'          # purple
+C = '\033[36m'          # cyan
 
 def bann_text():
     clear()
@@ -107,6 +108,16 @@ def loading_animation(text):
             sys.stdout.write('\r' + text + char)
             sys.stdout.flush()
             time.sleep(0.1)
+            
+# Slowly Type something instead of sudden print   
+def SlowType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.01)
+    print()  # Print a newline after printing the sentence slowly
+
+  
 
 
 # Check if Monitor Mode is already Enabled
@@ -278,8 +289,8 @@ try:
     # Command 1: Run airodump-ng in the current terminal
     proc1 = subprocess.Popen(["airodump-ng", "--bssid", BSSID, "--channel", CHANNEL, INTERFACE, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'], stdout=subprocess.PIPE, text=True)
     RES = 1
-    print(["airodump-ng", "--bssid", BSSID, "--channel", CHANNEL, INTERFACE, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'])
-    input()
+    # print(["airodump-ng", "--bssid", BSSID, "--channel", CHANNEL, INTERFACE, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'])
+    # input()
     # Command 2: Run aireplay-ng in a new xterm window
     aireplay_command = [
         "xterm",

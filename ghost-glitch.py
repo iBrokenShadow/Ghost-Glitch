@@ -41,14 +41,15 @@ requirements_satisfied = check_installation()
 
 
 # Console colors
-W = '\033[0m'  # white (normal)
-R = '\033[31m'  # red
-G = '\033[32m'  # green
-O = '\033[33m'  # orange
-B = '\033[34m'  # blue
-P = '\033[35m'  # purple
-C = '\033[36m'  # cyan
-GR = '\033[37m'  # gray
+W = '\033[37m'          # white (normal)
+GR = '\033[32m'         # white (normal)
+R = '\033[31m'          # red
+G = '\033[32m'          # green
+O = '\033[38;5;208m'    # orange
+Y = '\033[33m'          # Yellow
+B = '\033[34m'          # blue
+P = '\033[35m'          # purple
+C = '\033[36m'          # cyan
 
 def bann_text():
     # clear()
@@ -91,9 +92,20 @@ def run(cmd):
 def is_run_with_sudo():
     return os.geteuid() == 0
 
+
+# Slowly Type something instead of sudden print   
+def SlowType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.01)
+    print()  # Print a newline after printing the sentence slowly
+
+
+
 if is_run_with_sudo() == False:
     run(["figlet", "ERROR !!!"])
-    print(R+ "\n\nPlease run with sudo privileges...\n\n")
+    SlowType(R+ "\n\nPlease run with sudo privileges...\n\n")
     print("\n") ; input("Press Any Key to quit..") ; print(GR)
     sys.exit()
 
@@ -159,7 +171,7 @@ def get_interface_info():
 
 def list_Interface():
     print(O + "Connected interfaces:\n")
-    print("No.   PHY   Interface       Driver      Chipset")
+    SlowType("No.   PHY   Interface       Driver      Chipset")
     print("------------------------------------------------"+ GR)
     
     interface_info = get_interface_info()
@@ -167,11 +179,14 @@ def list_Interface():
     
     for phy_info,interface, driver, chipset in interface_info:
         if is_monitor_mode_enabled(interface) == True:
-            print(P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR)
-            print(W+ f"\t\t\t   (Monitor Mode Already Enabled on \"{interface}\")" + GR)
+            text = P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR
+            text2 = W+ f"\t\t\t   (Monitor Mode Already Enabled on \"{interface}\")" + GR
+            SlowType(text)
+            SlowType(text2)
             counter += 1
         else:
-            print(P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR)
+            text = P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR
+            SlowType(text)
             counter += 1
 
 
@@ -193,10 +208,8 @@ def SmartLoading():
     while time.time() - start_time < 1:
         print(char) ; time.sleep(0.1) ; i += 1
     clear_lines(i)
-    
-    
-
-            
+ 
+          
 
 # ENABLE MONITOR MODE (IWCONFIG & AIRMON-NG)
 def Enable_Monitor_Mode(interface):
@@ -205,20 +218,21 @@ def Enable_Monitor_Mode(interface):
         i = 0
         while i<2:
             subprocess.run(["sudo", "ifconfig", interface, "down"], check=True)
-            if i==1: print(W + "\t[+] Interface", interface, "Turned Down...") ; time.sleep(1)
+            if i==1: text = W + "\t[+] Interface ", interface, " Turned Down..." ; SlowType(text) ; time.sleep(1)
 
             subprocess.run(["sudo", "iwconfig", interface, "mode", "monitor"], check=True)
-            if i==1: print("\t[+] Interface", interface, "Mode Changed...") ; time.sleep(1)
+            if i==1: text = "\t[+] Interface" , interface, " Mode Changed..." ; SlowType(text)  ; time.sleep(1)
 
             subprocess.run(["sudo", "ifconfig", interface, "up"], check=True)
-            if i==1: print("\t[+] Interface", interface, "Turned UP...") ; time.sleep(1)
+            if i==1: text = "\t[+] Interface ", interface, " Turned UP..." ; SlowType(text)  ; time.sleep(1)
 
             subprocess.run(["sudo", "airmon-ng", "check", "kill"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            if i==1: print("\t[+] All Pending process killed..." + GR) ; time.sleep(1)
+            if i==1: text = "\t[+] All Pending process killed..." + GR ; SlowType(text) ; time.sleep(1)
             if i==1: sys.stdout.write("\033[F\033[K" * 4)
 
             if i==1: 
-                print(f"Monitor Mode Enabled on {interface}\n")
+                text = f"Monitor Mode Enabled on {interface}\n"
+                SlowType(text)
                 subprocess.run(["iwconfig", interface])
                 print("-----" *5) ; print("\n")
             i = i+1
@@ -229,9 +243,11 @@ def Enable_Monitor_Mode(interface):
         interface = interface + "mon"
             
         time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
-        print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR
+        SlowType(text)
 
-        print(f"Monitor Mode Enabled on {interface}\n")
+        text = f"Monitor Mode Enabled on {interface}\n"
+        SlowType(text)
         subprocess.run(["iwconfig", interface])
         print("-----" *5) ; print("\n")
             
@@ -240,19 +256,20 @@ def Enable_Monitor_Mode(interface):
     try:
         enable_monitor_mode_airmonNG(interface)
         modeOFmonitor = 0
-        print(R + "\nSome Running processes can cause issue (Kill Them): ~[sudo airmon-ng check kill]~" + G)
+        SlowType(R + "\nSome Running processes can cause issue (Kill Them): ~[sudo airmon-ng check kill]~" + G)
         
     except subprocess.CalledProcessError as e:
         time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
-        print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR
+        SlowType(text)
         
         enable_monitor_mode_iwconfig(interface) ; modeOFmonitor = 1
-        print(R + "\nEnable Network Services: ~[sudo service NetworkManager start]~" + G)
+        SlowType(R + "\nEnable Network Services: ~[sudo service NetworkManager start]~" + G)
         
     except KeyboardInterrupt:
-        print("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
+        SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
     except Exception as e:
-        clear() ; print(f"ERROR: {1}") ; ReportError() ; exit_pause()
+        clear() ; text = f"ERROR: {1}" ; SlowType(text) ; ReportError() ; exit_pause()
 
 
 
@@ -265,21 +282,25 @@ def disable_monitor_mode(interface):
         loading_animation(texxt, 1.5) ; Del_Current_Line()
 
         subprocess.run(["sudo", "ifconfig", interface, "down"], check=True)
-        print(W+"\t[+] Interface", interface, "Turned Down...") ; time.sleep(1)
+        text = W+"\t[+] Interface ", interface, " Turned Down..."
+        SlowType(text) ; time.sleep(1)
 
         subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
         subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
-        print("\t[+] Interface", interface, "Mode Changed...") ; time.sleep(1)
+        text = "\t[+] Interface ", interface, " Mode Changed..."
+        SlowType(text) ; time.sleep(1)
 
         subprocess.run(["sudo", "ifconfig", interface, "up"], check=True)
-        print("\t[+] Interface", interface, "Turned UP...") ; time.sleep(1)
+        text = "\t[+] Interface ", interface, " Turned UP..."
+        SlowType(text) ; time.sleep(1)
 
         subprocess.run(["sudo", "service", "NetworkManager", "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print("\t[+] Network Manager service started..."+GR) ; time.sleep(1)
+        SlowType("\t[+] Network Manager service started..."+GR) ; time.sleep(1)
         sys.stdout.write("\033[F\033[K" * 4)
 
         clear() ; bann_text()
-        print(f"Monitor Mode Disabled on : {interface}\n")
+        text = f"Monitor Mode Disabled on : {interface}\n"
+        SlowType(text)
         time.sleep(1) ; print("-----" *5)
         subprocess.run(["iwconfig", interface])
         print("-----" *5) ; print("\n")
@@ -290,9 +311,9 @@ def disable_monitor_mode(interface):
         interface = interface[:-3]
             
         time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
-        print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
 
-        print(f"Monitor Mode Disabled on : {interface}\n")
+        text = f"Monitor Mode Disabled on : {interface}\n" ; SlowType(text)
         subprocess.run(["iwconfig", interface])
         print("-----" *5) ; print("\n")
         
@@ -305,14 +326,14 @@ def disable_monitor_mode(interface):
         
     except subprocess.CalledProcessError as e:
         time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
-        print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
             
         disable_monitor_mode_iwconfig(interface) ; modeOFmonitor = 1
         
     except Exception as e:
-        clear() ; print(f"ERROR: {e}") ; ReportError() ; exit_pause()
+        clear() ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
     except KeyboardInterrupt:
-        print("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
+        SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
 
 
         
@@ -328,7 +349,7 @@ def is_monitor_mode_enabled(interface):
         else:
             return False
     except subprocess.CalledProcessError as e:
-        print(R+ f"Error checking monitor mode for {interface}: {e}" + GR)
+        text = R+ f"Error checking monitor mode for {interface}: {e}" + GR ; SlowType(text)
         return False
 
 # USER RESPONSE ON DISBALING MONITOR MODE
@@ -336,7 +357,7 @@ def DoIdisable(interface):
     try:
         user_input = input(P + "(( Disable Monitor Mode? (y/n) ))  "+GR) ; Del_Pre_Line()
         if len(user_input) != 1:
-            print(R+ "ERROR! Input must be a single character...")
+            SlowType(R+ "ERROR! Input must be a single character...")
             exit_pause()
             
         # Process the input here
@@ -345,7 +366,7 @@ def DoIdisable(interface):
             monitor_mode_enabled = is_monitor_mode_enabled(interface)
             if monitor_mode_enabled == False:
                 loading_animation("Wait... ", 1.5) ; Del_Current_Line()
-                print(O + f"Monitor Mode is already Disabled on interface : {interface}\n", GR)
+                text = O + f"Monitor Mode is already Disabled on interface : {interface}\n", GR ; SlowType(text)
                 
                 time.sleep(1) ; print("-----" *5)
                 subprocess.run(["iwconfig", interface])
@@ -355,14 +376,15 @@ def DoIdisable(interface):
                 interface = interface[:-3]
             
     except ValueError as e:
-        print(R+ "Error:", e) ; print(GR) ; ReportError() ; 
+        text = R+ "Error:", e ; SlowType(text)
+        print(GR) ; ReportError() ; 
         exit_pause()
     
 
 
 def runDumpFile(res, ghz, path, selected_interface):
     clear() ; bann_text()
-    print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n." + GR)
+    text = O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
     i = 1 ; j = 1 ; k = 1
     while i == 1:
         if j == 1:
@@ -394,6 +416,8 @@ def runDumpFile(res, ghz, path, selected_interface):
 #######################################################################################################
 # MAIN FUNCTION
 try:
+    clear()
+    # SlowType("", 0.02)
     requirements() ; bann_text() # ; global selected_interface
     # Get path exact name where the script is stored
     path = os.path.abspath(os.path.dirname(__file__)) + "/"
@@ -420,13 +444,13 @@ try:
                     break
                 else:
                     clear() ; bann_text() ; time.sleep(0.4) ; print(R)
-                    print("Invalid choice!!! Please select a valid interface number.")
+                    SlowType("Invalid choice!!! Please select a valid interface number.")
                     input("\nPress any key to start again... ") ; print(GR)
                     clear() ; bann_text() ; SmartLoading() ; list_Interface()
 
             except ValueError:
                 clear() ; bann_text() ; time.sleep(0.4) ; print(R)
-                print("Invalid input. Please enter a number.")
+                SlowType("Invalid input. Please enter a number.")
                 input("\nPress any key to start again... ") ; print(GR)
                 clear() ; bann_text() ;  SmartLoading() ; list_Interface()
                 
@@ -438,33 +462,34 @@ try:
             bann_text()
             if looped == 1: SmartLoading()
             
-            print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n" + P)
+            text = O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n" + P ; print(text)
 
                 # OPTION to Turn on Monitor Mode or Turn it Off or Dump
-            print("1. Turn ON Monitor Mode")
-            print("2. Turn OFF Monitor Mode")
-            print("3. Start Dumping Targets on 2.4Ghz")
-            print("4. Start Dumping Targets on 5.0Ghz")
-            print("5. Start Dumping Targets on Both Channels" + GR)
+            time.sleep(0.4)
+            SlowType("1. Turn ON Monitor Mode")
+            SlowType("2. Turn OFF Monitor Mode")
+            SlowType("3. Start Dumping Targets on 2.4Ghz")
+            SlowType("4. Start Dumping Targets on 5.0Ghz")
+            SlowType("5. Start Dumping Targets on Both Channels" + GR)
 
             try:
                 res = int(input("\nResponse : "))
                 if res == 1:
                     clear() ; bann_text()
-                    print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n." + GR)
+                    print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n.\n" + GR)
 
                     # Turn on monitor mode
                     monitor_mode_enabled = is_monitor_mode_enabled(selected_interface)
                     if monitor_mode_enabled:
                         loading_animation("Wait... ", 1.5) ; Del_Current_Line()
-                        print(O+ f"Monitor Mode is already enabled on interface : {selected_interface}\n" + GR)
+                        text = O+ f"Monitor Mode is already enabled on interface : {selected_interface}\n" + GR ; SlowType(text)
                         
                         time.sleep(1) ; print("-----" *5)
                         subprocess.run(["iwconfig", selected_interface])
                         print("-----" *5) ; 
                         
                         time.sleep(0.5)
-                        print(R + "\n\nEnable Network Services: ~[sudo service NetworkManager start]~\n" + G)
+                        text = R + "\n\nEnable Network Services: ~[sudo service NetworkManager start]~\n" + G ; SlowType(text)
                         DoIdisable(selected_interface) ; exit_pause()
 
                     texxt = "Enabling Monitor Mode on " + selected_interface + " "
@@ -477,7 +502,7 @@ try:
                 # Turn off monitor mode
                 elif res == 2:
                     clear() ; bann_text()
-                    print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n." + GR)
+                    print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n.\n" + GR)
                     disable_monitor_mode(selected_interface)
                     selected_interface = selected_interface[:-3] ; exit_pause() ; i = 1
                 
@@ -493,19 +518,19 @@ try:
                 # IF user enters invalid option
                 else:
                     clear() ; bann_text() ; time.sleep(0.4) ; print(R)
-                    print("Invalid choice!!! Please select a valid interface number.")
+                    SlowType("Invalid choice!!! Please select a valid interface number.")
                     input("\nPress any key to start again... ") ; looped = 1 ; print(GR)
                     
             except ValueError:
                 clear() ; bann_text() ; time.sleep(0.4) ; print(R)
-                print("Invalid input. Please enter a number.")
+                SlowType("Invalid input. Please enter a number.")
                 input("\nPress any key to start again... ") ; looped = 1 ; print(GR)
         # LOOP ENDS
         
 
     else:
         bann_text()
-        print(R+ "\n\nNo connected interfaces found." + GR)
+        SlowType(R+ "\n\nNo connected interfaces found." + GR)
         exit_pause()
 
 

@@ -14,18 +14,19 @@ import shutil
 import sys
 import signal
 import threading
-from X_requirements import check_installation
+from X_requirement import check_installation
 requirements_satisfied = check_installation()
 
 # Console colors
-W = '\033[0m'  # white (normal)
-R = '\033[31m'  # red
-G = '\033[32m'  # green
-O = '\033[33m'  # orange
-B = '\033[34m'  # blue
-P = '\033[35m'  # purple
-C = '\033[36m'  # cyan
-GR = '\033[37m'  # gray
+W = '\033[37m'          # white (normal)
+GR = '\033[32m'         # white (normal)
+R = '\033[31m'          # red
+G = '\033[32m'          # green
+O = '\033[38;5;208m'    # orange
+Y = '\033[33m'          # Yellow
+B = '\033[34m'          # blue
+P = '\033[35m'          # purple
+C = '\033[36m'          # cyan
 
 def bann_text():
     clear()
@@ -107,6 +108,34 @@ def loading_animation(text):
             sys.stdout.flush()
             time.sleep(0.05)
             
+            
+# SMART LOAD
+def SmartLoading():
+    char = '.'
+    start_time = time.time()
+    i = 0
+    while time.time() - start_time < 1:
+        print(char) ; time.sleep(0.1) ; i += 1
+    clear_lines(i)
+    
+# Slowly Type something instead of sudden print   
+def SlowType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.01)
+    print()  # Print a newline after printing the sentence slowly
+
+  
+    
+def clear_lines(num_lines):
+    # Clear lines from the current line up to num_lines lines above
+    for _ in range(num_lines):
+        sys.stdout.write("\033[F")  # Move cursor to the beginning of the previous line
+        sys.stdout.write("\033[K")  # Clear the line
+    sys.stdout.flush()
+    
+    
 
 # MONITOR MODE ENABLE
 def enable_monitor_mode(interface):
@@ -335,11 +364,37 @@ def overwrite_csv_file(filename):
     shutil.move(temp_filename, filename)
 
 
-
+    """
+    W = '\033[0m'  # white (normal)
+    R = '\033[31m'  # red
+    G = '\033[32m'  # green
+    O = '\033[33m'  # orange
+    B = '\033[34m'  # blue
+    P = '\033[35m'  # purple
+    C = '\033[36m'  # cyan
+    GR = '\033[37m' 
+    """
+    
+    # '\033[0m' '\033[31m' '\033[32m' '\033[33m' '\033[34m' '\033[35m' '\033[36m' '\033[37m' 
 
 
 # Print CSV file in terminal in proper format
 def print_csv_file(filename):
+    
+    colors = [
+        '\033[37m',  # White
+        '\033[34m',  # Blue
+        '\033[32m',  # Green
+        '\033[33m',  # Yellow
+        '\033[33m',  # Yellow (same as previous)
+        '\033[38;5;208m',  # Orange
+        '\033[35m',  # Purple
+        '\033[35m',  # Purple (same as previous)
+        '\033[31m',  # Red
+        '\033[31m',  # Red (same as previous)
+        '\033[36m',  # Cyan
+    ]
+    
     with open(filename, 'r') as csvfile:
         csvreader = csv.reader(csvfile)
         rows = list(csvreader)
@@ -347,14 +402,24 @@ def print_csv_file(filename):
         # Find maximum width for each column
         max_widths = [max(len(cell) for cell in col) for col in zip(*rows)]
 
-        # Print each row with proper formatting
-        i = 1
-        for row in rows:
-            if i == 2:
-                print("\n")
-            formatted_row = [cell.ljust(width) for cell, width in zip(row, max_widths)]
+        # Print first row with white color
+        first_row = rows[0]
+        formatted_first_row = []
+        for j, (cell, width) in enumerate(zip(first_row, max_widths)):
+            formatted_cell = f'\033[37m{cell.ljust(width)}\033[0m'  # White color
+            formatted_first_row.append(formatted_cell)
+        print(' | '.join(formatted_first_row))
+
+        print("\n")
+        
+        # Print the rest of the rows with proper formatting and color
+        for i, row in enumerate(rows[1:], start=1):
+            formatted_row = []
+            for j, (cell, width) in enumerate(zip(row, max_widths)):
+                color_index = j % len(colors)
+                formatted_cell = f'{colors[color_index]}{cell.ljust(width)}\033[0m'  # Reset color after each cell
+                formatted_row.append(formatted_cell)
             print(' | '.join(formatted_row))
-            i = i+1
 
         overwrite_csv_file(filename)
 
@@ -539,7 +604,7 @@ def runCaptureFile(interface, BSSID, CHANNEL, path):
 try:
     # Files will be saved to the location where the python script is stored 
     
-    requirements()
+    requirements() ; print(G)
     
     # path = os.path.abspath(os.path.dirname(__file__)) + "/"
     wpsfile = path + "wps_info_BS.txt"
@@ -569,7 +634,7 @@ try:
     # interface = selected_interface
 
     # Run airodump command
-    run_airodump(interface, CSVfilePath, wpsfile) ; clear() ; loading_animation("Fetching Data... ")
+    run_airodump(interface, CSVfilePath, wpsfile) ; clear() ; print(G) ; loading_animation("Fetching Data... ") ; print(GR)
     
     # Remove all Lines that ain't usefull to show
     specific_line = 'Station MAC'  # The specific line after which you want to remove content
@@ -639,17 +704,27 @@ try:
     subprocess.run("clear")
 
     
-    print(f"Selected Target:\n")
-    print(f"ESSID    :{SelectedESSID}")
-    print(f"BSSID    : {SelectedBSSID}")
-    print(f"Channel  : {SelectedChannel}")
-    print(f"Security : {Security}")
-    print(f"WPS Info : {WPSinfo}")
+    print(R + f"\t~SELECTED TARGET~\n" + G)
+    print(C + f"  [+] ESSID    :", B + SelectedESSID + G)
+    print(C + f"  [+] BSSID    : ", G + SelectedBSSID + G)
+    print(C + f"  [+] CHANNEL  : ", O + str(SelectedChannel) + G)
+    print(C + f"  [+] SECURITY : ", P + Security + G)
+    print(C + f"  [+] WPS INFO : ", C + WPSinfo + G)
 
     ############################# WORKING CURRENTLY
-    res = input("\nEnter to Start De-Authentication attack and Capture Handshake...\nor 'X' to Disable Monitor Mode! ")
+    # res = input("\nEnter to Start De-Authentication attack and Capture Handshake...\nor 'X' to Disable Monitor Mode! ")
+    print(G+ "\n\n     \t\t\t", "-"*30)
+    print("\t\t\t      --Select a Response--\n", "    \t\t\t", "-"*30)
+    print("\n  [x] " + P + "Capture Handshake & Start De-auth Attack (All Connected Seperately)     " + O + "  | -> Press ENTER" + G)
+    print("  [x] " + P + "Capture Handshake & Start De-auth Attack (All Connected Clients at Once)  " + O + "| -> Press '2'" + G)
+    print("  [x] " + P + "Manual Mode || Close and print All Details" + O + "                                | -> Press '3'" + G)
+    print("  [x] " + P + "Disable Monitor Mode" + O + "                                                      | -> Press '4'" + G)
+    print("  [x] " + P + "Exit Program" + O + "                                                              | -> Press '5'" + G)
+    res = input("\n  -----------> ")
+    
+    
     if res == '\n' or res == '':
-        time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") 
+        SmartLoading() ; print("\n\n")
         
         loading_animation("Please wait, Starting Handshake Capture... ")
         Del_Current_Line() ; clear()
