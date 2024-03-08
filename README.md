@@ -23,8 +23,8 @@
 - This application must not be used to cause harm/discomfort/trouble to others
 - By using this, you agree that you cannot hold the contributors responsible for any misuse
 
-
-
+#
+#
 
 ## Compatibility
 Check your Python version by typing in
