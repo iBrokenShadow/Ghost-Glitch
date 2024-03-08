@@ -93,9 +93,9 @@ pip install -r requirements.txt
 #
 #
 
-## Maker
+## Developer / Maker
 
-- SOLE **[iBrokenShadow](https://github.com/iBrokenShadow)** 
+- 👾 **[iBrokenShadow](https://github.com/iBrokenShadow)** 👾
 
         -------------------------------------------------------------
         REPORT ANY ERROR FOR FIXES (Thanks for your Contribution)
@@ -108,4 +108,4 @@ pip install -r requirements.txt
         Give a ★ if you like this project, visit https://ibrokenshadow.com
         -------------------------------------------------------------
 
-<p align="right"> Credit: @iBrokenShadow </p>
+<p align="right"> Happy Hunting </p>
