@@ -63,6 +63,7 @@ Git installation methods are not universal and are likely to differ between dist
 > Make sure to always run it as sudo
 
 #
+#
 #### For Debian-based GNU/LINUX distributions (KALI RECOMMENDED)
 To use the application, type in the following commands in GNU/Linux terminal.
 
@@ -75,7 +76,7 @@ pip install -r requirements.txt
 chmod +x *
 ./ghost-glitch.sh
 ```
-
+#
 
 #### For Termux
 
