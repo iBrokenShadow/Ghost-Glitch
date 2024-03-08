@@ -23,7 +23,7 @@
 - This application must not be used to cause harm/discomfort/trouble to others
 - By using this, you agree that you cannot hold the contributors responsible for any misuse
 
-# WORKIGN CURRENTLY
+
 
 ## Compatibility
 Check your Python version by typing in
@@ -53,7 +53,6 @@ or any version greater than or equal to 3.4, this script has been tested and con
 ## Usage:
 
 ### Install from GIT (Recommended)
-
 #### NOTE 
 
 Git installation methods are not universal and are likely to differ between distributions so installing Git as per the given instructions below may not work. Please check out how to install Git for your Linux distribution [here](https://git-scm.com/). Commands below provide instructions for Debian-based systems.
@@ -62,9 +61,9 @@ Git installation methods are not universal and are likely to differ between dist
 > Make sure to always run it as sudo
 
 
-#### For Debian-based GNU/Linux distributions
-
+#### For Debian-based GNU/Linux distributions (KALI RECOMMENDED)
 To use the application, type in the following commands in GNU/Linux terminal.
+
 ```shell script
 sudo apt install git && sudo apt install figlet && sudo apt install lsb_release
 sudo apt install mdk4 && sudo apt install python -y && sudo apt install aircrack-ng
