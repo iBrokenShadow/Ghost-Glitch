@@ -70,6 +70,7 @@ sudo apt install git && sudo apt install figlet && sudo apt install lsb_release
 sudo apt install mdk4 && sudo apt install python -y && sudo apt install aircrack-ng
 git clone https://github.com/iBrokenShadow/Ghost-Glitch.git
 cd Ghost-Glitch
+pip install -r requirements.txt
 chmod +x *
 ./ghost-glitch.sh
 ```
@@ -79,16 +80,11 @@ chmod +x *
 
 To use the bomber type the following commands in Termux:
 ```shell script
-pkg install git -y 
-pkg install figlet -y 
-pkg install lsb_release -y 
-pkg install mdk4 -y 
-pkg install aircrack-ng -y 
-pkg install mdk4 -y 
-pkg install python -y 
+pkg install git -y && pkg install figlet -y && pkg install lsb_release -y  && pkg install mdk4 -y 
+pkg install aircrack-ng -y && pkg install mdk4 -y && pkg install python -y
 git clone https://github.com/iBrokenShadow/Ghost-Glitch.git
-cd Ghost-Glitch
-chmod +x *
+cd Ghost-Glitch && chmod +x *
+pip install -r requirements.txt
 ./ghost-glitch.sh
 ```
 
