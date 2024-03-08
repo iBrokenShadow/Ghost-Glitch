@@ -37,7 +37,7 @@ Python 3.12.2
 ```
 or any version greater than or equal to 3.4, this script has been tested and confirmed to be supported. For obsolete versions of Python (eg 2.7), use discretion while executing the script as it has not been tested there.
 
-
+#
 
 ## Features
 
@@ -51,7 +51,8 @@ or any version greater than or equal to 3.4, this script has been tested and con
   you can also not opt for deauthentication attack and perform any other way possible to get handhsake while this tool keeps capturing the packets 
 
 + More Features are getting added while I'm working on this
-
+#
+#
 
 ## Usage:
 
@@ -63,7 +64,7 @@ Git installation methods are not universal and are likely to differ between dist
 > Run these commands to clone and run `ghost-glitch.sh` .
 > Make sure to always run it as sudo
 
-
+#
 #### For Debian-based GNU/Linux distributions (KALI RECOMMENDED)
 To use the application, type in the following commands in GNU/Linux terminal.
 
@@ -91,7 +92,8 @@ pip install -r requirements.txt
 ```
 
 
-
+#
+#
 
 ## Maker
 
