@@ -54,9 +54,7 @@ or any version greater than or equal to 3.4, this script has been tested and con
 #
 #
 
-## Usage:
-
-### Install from GIT (Recommended)
+## USAGE:
 #### NOTE 
 
 Git installation methods are not universal and are likely to differ between distributions so installing Git as per the given instructions below may not work. Please check out how to install Git for your Linux distribution [here](https://git-scm.com/). Commands below provide instructions for Debian-based systems.
@@ -65,7 +63,7 @@ Git installation methods are not universal and are likely to differ between dist
 > Make sure to always run it as sudo
 
 #
-#### For Debian-based GNU/Linux distributions (KALI RECOMMENDED)
+#### For Debian-based GNU/LINUX distributions (KALI RECOMMENDED)
 To use the application, type in the following commands in GNU/Linux terminal.
 
 ```shell script
