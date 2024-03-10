@@ -51,6 +51,17 @@ B = '\033[34m'          # blue
 P = '\033[35m'          # purple
 C = '\033[36m'          # cyan
 
+# Getting Version of File
+try:
+    path = os.path.abspath(os.path.dirname(__file__)) + "/"
+    versionFile = path + ".version"
+    with open(versionFile, "r") as file:
+        versionOfScript = file.read()
+except: 
+    versionOfScript = "--"
+    pass
+
+
 def bann_text():
     # clear()
     logo = """ 
@@ -60,9 +71,9 @@ def bann_text():
 ██║░░╚██╗██╔══██║██║░░██║░╚═══██╗░░░██║░░░╚════╝██║░░╚██╗██║░░░░░██║░░░██║░░░██║░░██╗██╔══██║
 ╚██████╔╝██║░░██║╚█████╔╝██████╔╝░░░██║░░░░░░░░░╚██████╔╝███████╗██║░░░██║░░░╚█████╔╝██║░░██║
 ░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░░░░░░░╚═════╝░╚══════╝╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
-
     """
     print(R + logo + G)
+    print(R+ f"\t\t\t\t\t\t\t\t- by iBrokenShadow ({versionOfScript})\n\n\n" + G)
 
 def ReportError():
     header = "\n\n\n\n\t-------------------------------------------------------------"
@@ -102,6 +113,15 @@ def SlowType(text):
     print()  # Print a newline after printing the sentence slowly
 
 
+# Fastly Type something instead of sudden print   
+def FastType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.005)
+    print()  # Print a newline after printing the sentence slowly
+    
+    
 
 if is_run_with_sudo() == False:
     run(["figlet", "ERROR !!!"])
@@ -170,8 +190,8 @@ def get_interface_info():
 
 
 def list_Interface():
-    print(O + "Connected interfaces:\n")
-    SlowType("No.   PHY   Interface       Driver      Chipset")
+    SlowType(O + "Connected interfaces:\n")
+    print("No.   PHY   Interface       Driver      Chipset") ; time.sleep(0.3)
     print("------------------------------------------------"+ GR)
     
     interface_info = get_interface_info()
@@ -181,12 +201,12 @@ def list_Interface():
         if is_monitor_mode_enabled(interface) == True:
             text = P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR
             text2 = W+ f"\t\t\t   (Monitor Mode Already Enabled on \"{interface}\")" + GR
-            SlowType(text)
-            SlowType(text2)
+            FastType(text) ; time.sleep(0.3)
+            print(text2) ; time.sleep(0.3)
             counter += 1
         else:
             text = P+ f"{counter}.    {phy_info:<7}{interface:<15}{driver:<12}{chipset}" + GR
-            SlowType(text)
+            FastType(text)
             counter += 1
 
 
@@ -394,7 +414,7 @@ def runDumpFile(res, ghz, path, selected_interface):
                     loading_animation(f"Airodump-ng Starting on {ghz}... ", 1.5) ; Del_Current_Line()
                     dumpFile = path + "utils/B_handleDumpAirodump-ng.py"
                     subprocess.run(['sudo', 'python', dumpFile, selected_interface, res, path])
-                    exit ; k=k+1
+                    sys.exit(1) ; k=k+1
                     
             else: 
                 loading_animation("Turning On Monitor Mode! Wait... ", 1)
@@ -407,7 +427,7 @@ def runDumpFile(res, ghz, path, selected_interface):
             if k == 1:
                 dumpFile = path + "utils/B_handleDumpAirodump-ng.py"
                 subprocess.run(['sudo', 'python', dumpFile, selected_interface, res, path])
-                exit ; k=k+1
+                sys.exit(1) ; k=k+1
 
 
 
@@ -437,7 +457,9 @@ try:
                     loading_animation("Selecting Interface Automatically... ", 1.8)
                     
                     
-                else: choice = int(input("\n\nSelect an interface by number: ")) ; print(GR)
+                else: 
+                    FastType("\n\nSelect an interface by number: ") ; Del_Pre_Line()
+                    choice = int(input("Select an interface by number: ")) ; print(GR)
                 
                 if 1 <= choice <= len(connected_interfaces):
                     selected_interface = connected_interfaces[choice - 1]
@@ -464,16 +486,18 @@ try:
             
             text = O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n" + P ; print(text)
 
-                # OPTION to Turn on Monitor Mode or Turn it Off or Dump
+            # OPTION to Turn on Monitor Mode or Turn it Off or Dump
             time.sleep(0.4)
-            SlowType("1. Turn ON Monitor Mode")
-            SlowType("2. Turn OFF Monitor Mode")
-            SlowType("3. Start Dumping Targets on 2.4Ghz")
-            SlowType("4. Start Dumping Targets on 5.0Ghz")
-            SlowType("5. Start Dumping Targets on Both Channels" + GR)
+            print("[+] Start Monitor Mode              " + O + "|1|" + P) ; time.sleep(0.04)
+            print("[+] Stop Monitor Mode               " + O + "|2|" + P) ; time.sleep(0.04)
+            print("[+] Airodump-ng on 2.4Ghz           " + O + "|3|" + P) ; time.sleep(0.04)
+            print("[+] Airodump-ng on 5.0Ghz           " + O + "|4|" + P) ; time.sleep(0.04)
+            print("[+] Airodump-ng on Both Channels    " + O + "|5|" + GR) ; time.sleep(0.04)
+            SlowType("\nResponse : ")
 
             try:
-                res = int(input("\nResponse : "))
+                Del_Pre_Line()
+                res = int(input("Response : "))
                 if res == 1:
                     clear() ; bann_text()
                     print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n.\n" + GR)

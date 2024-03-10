@@ -28,18 +28,51 @@ B = '\033[34m'          # blue
 P = '\033[35m'          # purple
 C = '\033[36m'          # cyan
 
+# Getting Version of File
+try:
+    pathOFScript = os.path.abspath(os.path.dirname(__file__))
+    pathOFScript = pathOFScript[:-5]
+    versionFile = pathOFScript + ".version"
+    with open(versionFile, "r") as file:
+        versionOfScript = file.read()
+except: 
+    versionOfScript = "--"
+    pass
+
+
 def bann_text():
-    clear()
+    # clear()
     logo = """ 
-    ░██████╗░██╗░░██╗░█████╗░░██████╗████████╗░░░░░░░██████╗░██╗░░░░░██╗████████╗░█████╗░██╗░░██╗
-    ██╔════╝░██║░░██║██╔══██╗██╔════╝╚══██╔══╝░░░░░░██╔════╝░██║░░░░░██║╚══██╔══╝██╔══██╗██║░░██║
-    ██║░░██╗░███████║██║░░██║╚█████╗░░░░██║░░░█████╗██║░░██╗░██║░░░░░██║░░░██║░░░██║░░╚═╝███████║
-    ██║░░╚██╗██╔══██║██║░░██║░╚═══██╗░░░██║░░░╚════╝██║░░╚██╗██║░░░░░██║░░░██║░░░██║░░██╗██╔══██║
-    ╚██████╔╝██║░░██║╚█████╔╝██████╔╝░░░██║░░░░░░░░░╚██████╔╝███████╗██║░░░██║░░░╚█████╔╝██║░░██║
-    ░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░░░░░░░╚═════╝░╚══════╝╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
-    
+░██████╗░██╗░░██╗░█████╗░░██████╗████████╗░░░░░░░██████╗░██╗░░░░░██╗████████╗░█████╗░██╗░░██╗
+██╔════╝░██║░░██║██╔══██╗██╔════╝╚══██╔══╝░░░░░░██╔════╝░██║░░░░░██║╚══██╔══╝██╔══██╗██║░░██║
+██║░░██╗░███████║██║░░██║╚█████╗░░░░██║░░░█████╗██║░░██╗░██║░░░░░██║░░░██║░░░██║░░╚═╝███████║
+██║░░╚██╗██╔══██║██║░░██║░╚═══██╗░░░██║░░░╚════╝██║░░╚██╗██║░░░░░██║░░░██║░░░██║░░██╗██╔══██║
+╚██████╔╝██║░░██║╚█████╔╝██████╔╝░░░██║░░░░░░░░░╚██████╔╝███████╗██║░░░██║░░░╚█████╔╝██║░░██║
+░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░░░░░░░╚═════╝░╚══════╝╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
     """
-    print(logo)
+    print(R + logo + G)
+    print(R+ f"\t\t\t\t\t\t\t\t- by iBrokenShadow ({versionOfScript})\n\n\n" + G)
+    
+def ReportError():
+    header = "\n\n\n\n\t-------------------------------------------------------------"
+    header2 = "\t-------------------------------------------------------------"
+    MainHeader = "\tREPORT ANY ERROR FOR FIXES (Thanks for your Contribution)"
+    mainMessage = """
+        Given Contacts : Telegram  : https://t.me/iBrokenShadow
+                       : Instagram : https://www.instagram.com/iBrokenShadow/
+                       : Github    : https://github.com/iBrokenShadow
+    """
+    Terrr2 = "\tThanks! visit https://ibrokenshadow.com"
+    
+    print(C + header + W)
+    
+    print(R + MainHeader + W)
+    print(W + mainMessage + W)
+    print(G + Terrr2 + W)
+    
+    print(C + header2 + W)
+    sys.exit(1)
+
 
 def run(cmd):
     subprocess.run(cmd)
@@ -60,8 +93,7 @@ def is_run_with_sudo():
 
 if is_run_with_sudo() == False:
     print("ERROR!!!\n\nPlease run with sudo privileges...\n\n")
-    print("\n") ; input("Press Any Key to quit...")
-    sys.exit()
+    print("\n") ; time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 subprocess.run("clear")
 
@@ -74,7 +106,7 @@ except:
     print("NO Interface or Mode or Path Provided!\n\nexample:\n\tsudo python -u \"scriptName.py\" interface-name mode(a/b/g) \"PATH TO ghostglitch.py File\"" )
     print("\n") ; 
     try: input("Press Any Key to quit...")
-    except KeyboardInterrupt: sys.exit(0)
+    except KeyboardInterrupt: time.sleep(0.2) ; ReportError() ; sys.exit(1)
     sys.exit(0)
 
 def exit_pause():
@@ -123,9 +155,16 @@ def SlowType(text):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
-        time.sleep(0.01)
+        time.sleep(0.012)
     print()  # Print a newline after printing the sentence slowly
-
+  
+# Fastly Type something instead of sudden print   
+def FastType(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.005)
+    print()  # Print a newline after printing the sentence slowly
   
     
 def clear_lines(num_lines):
@@ -181,7 +220,7 @@ def DoIdisable(interface):
             
     except ValueError as e:
         print("Error:", e)
-        exit_pause()
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 
 #------------------------------------------------------------------------------------------------------
@@ -196,15 +235,19 @@ def run_airodump(interface, CSVfilePath, wpsFile):
         # Start the airodump-ng process
         process = subprocess.Popen(command)
         process2 = subprocess.Popen(command2, shell=True)
-        process.wait()
+        
+        process.wait() ; process2.wait()
+        process.kill() ; process2.kill()
 
     except KeyboardInterrupt:
-        process.terminate() ; process2.terminate()
+        process.kill() ; process2.kill()
+        process.wait() ; process2.wait()
         backToMain()
     except FileNotFoundError:
         subprocess.run("clear")
         print("Error: airodump-ng command not found...")
-        print("Install it and retry!!!") ; input() ; exit
+        print("Install it and retry!!!")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 # IGNORE
 def backToMain(): a = 1
@@ -227,9 +270,10 @@ def remove_after_specific_line(fileWithExtension, specific_line):
 
     except FileNotFoundError:
         print(f"Error: File '{fileWithExtension}' not found.")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}")
-
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 # Extract Usefull Columns and overwrite to the file
 def extract_specific_columns(fileWithExtension):
@@ -242,8 +286,10 @@ def extract_specific_columns(fileWithExtension):
 
     except FileNotFoundError:
         print(f"Error: File '{fileWithExtension}' not found.")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
     except Exception as e:
         print(f"An error occurred: {e}")
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 
 
@@ -420,6 +466,7 @@ def print_csv_file(filename):
                 formatted_cell = f'{colors[color_index]}{cell.ljust(width)}\033[0m'  # Reset color after each cell
                 formatted_row.append(formatted_cell)
             print(' | '.join(formatted_row))
+            time.sleep(0.04)
 
         overwrite_csv_file(filename)
 
@@ -447,7 +494,7 @@ def extract_data(filename, line_number):
             
 
             # Convert the fourth element to an integer
-            fourth_element = int(line[3])
+            fourth_element = line[3]
 
             return entire_line, second_element, third_element, fourth_element, six_eight, Eleventh_element
         else:
@@ -528,7 +575,7 @@ def text_to_csv(input_file, output_file):
                 writer.writerow(row)
     except Exception as e:
         print(f"\n\n\n\nERROR - While Converting Wash Command Result to CSV: \n{e}")
-        sys.exit(0)
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 
 def MergeLockedWPS_Column(input_file):
@@ -574,19 +621,19 @@ def MonitorModeDisbaled_RedirectProgramA(monitorModeFile):
         sys.exit()
 
 
-def runCaptureFile(interface, BSSID, CHANNEL, path):
-    time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") 
+# def runCaptureFile(interface, BSSID, CHANNEL, path):
+#     time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") ; time.sleep(0.5) ; print(".") 
     
-    loading_animation("Please wait, Starting Handshake Capture... ")
-    Del_Current_Line() ; clear()
+#     loading_animation("Please wait, Starting Handshake Capture... ")
+#     Del_Current_Line() ; clear()
 
-    # python -u "scriptName.py" 'interface-name' 'BSSID' 'CHANNEL'
-    captureFile = path + "utils/C_captureHandshake.py"
-    print(['sudo', 'python', captureFile, interface, BSSID, CHANNEL, path]) ; input()
+#     # python -u "scriptName.py" 'interface-name' 'BSSID' 'CHANNEL'
+#     captureFile = path + "utils/C_captureHandshake.py"
+#     # print(['sudo', 'python', captureFile, interface, BSSID, CHANNEL, path]) ; input()
 
-    global proc
-    proc = subprocess.Popen(['sudo', 'python', interface, BSSID, CHANNEL], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    exit ; sys.exit()
+#     global proc
+#     proc = subprocess.Popen(['sudo', 'python', captureFile, interface, BSSID, CHANNEL], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#     sys.exit()
 
 
 
@@ -675,7 +722,7 @@ try:
         os.remove(fileWithExtension)
     except Exception as e:
         print(f"\n\n\n\nERROR: While Removing Worked Files: \n{e}")
-        sys.exit(0)
+        time.sleep(0.2) ; ReportError() ; sys.exit(1)
     
     os.rename(tempFilecSV, fileWithExtension)
     # subprocess.run(["mv", tempFilecSV, "-T", fileWithExtension, "-f"])
@@ -701,15 +748,19 @@ try:
             loading_animation("Invalid input. Please enter a number.") ; Del_Current_Line()
 
     entire_line, SelectedESSID, SelectedBSSID, SelectedChannel, Security, WPSinfo = extract_data(fileWithExtension, line_number)
-    subprocess.run("clear")
 
+    clear()
+    # REMOVE SPACES FROM VARIABLES
+    SelectedBSSID = "".join(SelectedBSSID.split())
+    SelectedChannel = "".join(SelectedChannel.split())
     
-    print(R + f"\t~SELECTED TARGET~\n" + G)
-    print(C + f"  [+] ESSID    :", B + SelectedESSID + G)
-    print(C + f"  [+] BSSID    : ", G + SelectedBSSID + G)
-    print(C + f"  [+] CHANNEL  : ", O + str(SelectedChannel) + G)
-    print(C + f"  [+] SECURITY : ", P + Security + G)
-    print(C + f"  [+] WPS INFO : ", C + WPSinfo + G)
+    print(R + f"\n\t~SELECTED TARGET~\n" + G)                       ; time.sleep(0.4)
+    text = C + f"  [+] ESSID    :", B + SelectedESSID + G           ; SlowType(text)
+    text = C + f"  [+] BSSID    : ", G + SelectedBSSID + G          ; SlowType(text)
+    text = C + f"  [+] CHANNEL  : ", O + str(SelectedChannel) + G   ; SlowType(text)
+    text = C + f"  [+] SECURITY : ", P + Security + G               ; SlowType(text)
+    text = C + f"  [+] WPS INFO : ", C + WPSinfo + G                ; SlowType(text)
+    
 
     ############################# WORKING CURRENTLY
     # res = input("\nEnter to Start De-Authentication attack and Capture Handshake...\nor 'X' to Disable Monitor Mode! ")
@@ -722,17 +773,26 @@ try:
     print("  [x] " + P + "Exit Program" + O + "                                                              | -> Press '5'" + G)
     res = input("\n  -----------> ")
     
+    # print(SelectedESSID)
+    # print(SelectedBSSID)
+    # print(SelectedChannel)
+    # print(len(SelectedESSID))
+    # print(len(SelectedBSSID))
+    # print(len(SelectedChannel)) ; input()
+    
     
     if res == '\n' or res == '':
         SmartLoading() ; print("\n\n")
         
-        loading_animation("Please wait, Starting Handshake Capture... ")
+        loading_animation("\tPlease wait, Starting Handshake Capture... ")
         Del_Current_Line() ; clear()
 
         # python -u "scriptName.py" 'interface-name' 'BSSID' 'CHANNEL'
         captureFile = path + "utils/C_captureHandshake.py"
-        subprocess.run(['sudo', 'python', captureFile, interface, SelectedBSSID, str(SelectedChannel), path])
-        exit ; sys.exit()
+        SlowType(P+ "Starting the ...\n" +GR) ; time.sleep(0.5) ; subprocess.run(["figlet" , "     DEMON"])
+        
+        subprocess.run(['sudo', 'python', captureFile, interface, SelectedBSSID, SelectedChannel, path])
+        sys.exit(0)
 
     else:
         # Show options to disable Monitor mode or Exit program
@@ -741,8 +801,8 @@ try:
         exit
 
 except KeyboardInterrupt:
-    print("\nBYE...") ; sys.exit(0)
+    time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 except Exception as e:
     print(f"\n\n\n\nERROR 1: {e}")
-    sys.exit(0)
+    time.sleep(0.2) ; ReportError() ; sys.exit(1)
