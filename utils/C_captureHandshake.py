@@ -15,8 +15,11 @@ import shutil
 import sys
 import signal
 import threading
+import select
 from X_requirement import check_installation
 requirements_satisfied = check_installation()
+
+# print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
 
 # Console colors
 W = '\033[37m'          # white (normal)
@@ -150,7 +153,21 @@ def SlowType(text):
         time.sleep(0.01)
     print()  # Print a newline after printing the sentence slowly
 
-  
+def clear_lines(num_lines):
+    # Clear lines from the current line up to num_lines lines above
+    for _ in range(num_lines):
+        sys.stdout.write("\033[F")  # Move cursor to the beginning of the previous line
+        sys.stdout.write("\033[K")  # Clear the line
+    sys.stdout.flush()
+
+# SMART LOAD
+def SmartLoading():
+    char = '.'
+    start_time = time.time()
+    i = 0
+    while time.time() - start_time < 1:
+        print(char) ; time.sleep(0.1) ; i += 1
+    clear_lines(i)
   
 # Fastly Type something instead of sudden print   
 def FastType(text):
@@ -174,49 +191,6 @@ def is_monitor_mode_enabled(interface):
         return False
 
 
-# # MONITOR MODE DISABLE
-# def disable_monitor_mode(interface):
-#     x =0
-    
-# # USER RESPONSE ON DISBALING MONITOR MODE
-# def DoIdisable(interface):
-#     try:
-#         user_input = input("(( Disable Monitor Mode? (y/n) ))  ") ; Del_Pre_Line()
-#         if len(user_input) != 1:
-#             print("ERROR! Input must be a single character...")
-#             exit_pause()
-            
-#         # Process the input here
-#         if user_input.lower() == 'y':
-#             # IF MONITOR MORE IS ALREADY DISABLED THERE
-#             monitor_mode_enabled = is_monitor_mode_enabled(interface)
-#             if monitor_mode_enabled == False:
-#                 loading_animation("Wait... ") ; Del_Current_Line()
-#                 print(f"Monitor Mode is already Disabled on interface : {interface}\n")
-                
-#                 time.sleep(1) ; print("-----" *5)
-#                 subprocess.run(["iwconfig", interface])
-#                 print("-----" *5) ; exit_pause()
-#             else:
-#                 disable_monitor_mode(interface)
-            
-#     except ValueError as e:
-#         print("Error:", e)
-#         exit_pause()
-    
-
-
-#------------------------------------------------------------------------------------------------------
-# global rest
-# # Function to handle KeyboardInterrupt
-# def handle_interrupt(signum, frame):
-#     # Terminate command 2
-#     print("Ctrl+C detected. Terminating processes...")
-#     proc2.terminate()
-
-    
-
-
 # IGNORE
 def backToMain():
     a = 1
@@ -229,6 +203,72 @@ def MonitorModeDisbaled_RedirectProgramA(monitorModeFile):
 
         subprocess.run(['sudo', 'python', monitorModeFile])
         sys.exit()
+        
+        
+        
+# MONITOR MODE DISABLE
+def disable_monitor_mode(interface):
+    global modeOFmonitorDisable
+    def disable_monitor_mode_iwconfig(interface):
+        texxt = "Turning Monitor Mode Off on : " + interface + " "
+        loading_animation(texxt, 1.5) ; Del_Current_Line()
+
+        subprocess.run(["sudo", "ifconfig", interface, "down"], check=True)
+        text = W+"\t[+] Interface ", interface, " Turned Down..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
+        subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
+        text = "\t[+] Interface ", interface, " Mode Changed..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "ifconfig", interface, "up"], check=True)
+        text = "\t[+] Interface ", interface, " Turned UP..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "service", "NetworkManager", "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        SlowType("\t[+] Network Manager service started..."+GR) ; time.sleep(1)
+        sys.stdout.write("\033[F\033[K" * 4)
+
+        clear() ; bann_text()
+        text = f"Monitor Mode Disabled on : {interface}\n"
+        SlowType(text)
+        time.sleep(1) ; print("-----" *5)
+        subprocess.run(["iwconfig", interface])
+        print("-----" *5) ; print("\n")
+                    
+    def disable_monitor_mode_airmonNG(interface):
+        print(W)
+        processCHECK = subprocess.run(["sudo", "airmon-ng", "stop", interface], check=True)
+        interface = interface[:-3]
+            
+        time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
+
+        text = f"Monitor Mode Disabled on : {interface}\n" ; SlowType(text)
+        subprocess.run(["iwconfig", interface])
+        print("-----" *5) ; print("\n")
+        
+        
+    
+    # MAIN ASE
+    try:
+        disable_monitor_mode_airmonNG(interface)
+        modeOFmonitorDisable = 0
+        
+    except subprocess.CalledProcessError as e:
+        time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
+            
+        disable_monitor_mode_iwconfig(interface)
+        modeOFmonitorDisable = 1
+    
+    except Exception as e:
+        clear() ; print("\n\n") ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
+    except KeyboardInterrupt:
+        SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
+
+
         
         
 # Get Connected Client's BSSIDs for Deauthentication attack on each clients that get connected        
@@ -307,28 +347,54 @@ def change_interface_name(current_name, new_name):
 #----------------------------------------------------------------------
                             # POST DEMON
 #----------------------------------------------------------------------
-def PostDemon():
+        
+def PostDemon(isItCaptured):
     try:
         subprocess.run("clear")
-        print(output_lines)
-        lines = (CountCSVLines(CAPfileName+"-01.csv")) + 6 ; i = 0
+        
+        def printDecor():
+            time.sleep(0.5)
+            print(O + "------------------------------------------------------------------------------------------------" + GR)
+            print(O + "------------------------------------------------------------------------------------------------" + GR)
+            i = 0
+            while i<3:
+                time.sleep(0.12)
+                print(O+ "." + GR) ; i+=1
+        
+        print("1\n")
+        postDmeonFile_Cap = PythonFilepath +"utils/postdemon_Cap.py"
+        print("1\n")
+        postDmeonFile_NotCap = PythonFilepath +"utils/postdemon_NoCap.py"
+        print("1\n")
         
         # CHECK IF HANDSHAKE ACTUALLY CAPTURED OR NOT
-        if retVAL == True:
-            while i<lines: 
-                print("\n") ; i+=1
-            print(" HANDSHAKE CAPTURED")
-            print(f"\n Captured Files are stored in : \n \"{path}\"\n\n Press Enter to Close...\n\n")
+        if isItCaptured == "DONE":          # HANDHSHAKE CAPTURED
+            clear() ; bann_text() ; printDecor()
             
-        if retVAL == False:
-            print("\n\n ERROR! HANDSHAKE NOT CAPTURED...\n Try Again...\n\n")
-            print(f" Captured Files are stored in : \n \"{path}\"")
-        
+            SlowType(O + "\n-// HANDSHAKE CAPTURED //-" +GR)
+            text = G + "\n [+] Captured Files    : " + W + f"\"{path}\"" + W ; FastType(text)
+            airodumpFile = path[:-20] + "airodumped_BS_list-01.csv"
+            text = G + " [+] Airodump-ng Dumps : " + W + f"\"{airodumpFile}\"" + W ; FastType(text)
+            # input("HI") ; input("Second HI")
+            
+            
+                    
+        else:                       # HANDHSHAKE NOT CAPTURED XXXX
+            print("\n") ; printDecor()
+            SlowType(R + "\n-// SORRY! HANDSHAKE NOT CAPTURED //-" +GR)
+            text = R + "\n [+] Captured Files    : " + W + f"\"{path}\"" + W ; FastType(text)
+            airodumpFile = path[:-20] + "airodumped_BS_list-01.csv"
+            text = R + " [+] Airodump-ng Dumps : " + W + f"\"{airodumpFile}\"" + W ; FastType(text)
+            
+            time.sleep(0.5) ; input("\n...Try Again or Debug issues with Adapter / Use different Techiniques")
+            
+            
         
     except KeyboardInterrupt:
         print("\n\n") ; time.sleep(0.2) ; ReportError() ; sys.exit(1)
     except Exception as e: 
-        print(f"ERROR: {e}")
+        pass
+        print(f"ERROR 648: {e}")
         time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 ########################################## --END--  ###################################################
@@ -344,10 +410,11 @@ def PostDemon():
 #######################################################################################################
 
 try:
+    
     RES = 0 ; requirements()
     # PythonFilepath = os.path.abspath(os.path.dirname(__file__)) + "/"
     current_directory = os.getcwd() + "/"
-    MonitorModeDisbaled_RedirectProgramA(PythonFilepath + "ghost-glitch.py")
+    MonitorModeDisbaled_RedirectProgramA(PythonFilepath + "ghost_glitch.py")
 
     CSVfilePath = PythonFilepath + "airodumped_BS_list-01.csv"
     path = PythonFilepath + "CaptureHandshake_BS" + "/"
@@ -370,8 +437,6 @@ try:
     except: pass
     subprocess.run("clear")
     
-    # CAPTURE COMMAND STARTS    
-    global retVAL ; retVAL = False
     
                 
                 
@@ -399,41 +464,47 @@ try:
     ]
     proc2 = subprocess.Popen(aireplay_command)
 
-
-    output_lines = ""
     # Monitor output of command 1
     while True:
         line = proc1.stdout.readline().strip()
-        output_lines += line + "\n"
         
         print(line)  # Print the output of command 1
         if "handshake" in line.lower():  # Check if the word "handshake" is in the line
             proc2.kill() ; proc1.kill()
-            retVAL = True
             break
-    
-
-    proc2.kill() ; proc1.kill()
-    subprocess.run("clear")
+        
     if RES==1: 
         moveFilestoPath(files)
-        PostDemon() ; time.sleep(0.2) ; ReportError() ; sys.exit(1)
-    sys.exit(0)
+        PostDemon("DONE")
+
+
+    # --------------------------------------------------------------------------------------------
+    # POST PostDemon
+
+
+
+
+
+
+
+
+
+
+
 
 #--------------------END-----------------------
-
+    time.sleep(0.2) ; ReportError() ; sys.exit(1)
 
 
 except KeyboardInterrupt:
     #subprocess.run("clear")
     if RES==1: 
         moveFilestoPath(files)
-        PostDemon()
+        PostDemon("NOT_DONE")
         
     proc2.kill() ; proc1.kill()
     time.sleep(0.2) ; ReportError() ; sys.exit()
     
 except Exception as e:
     proc2.kill() ; proc1.kill()
-    subprocess.run("clear")
-    print(f"ERROR: {e}") ; input()
+    print(f"\n\nERROR: {e}") ; time.sleep(0.2) ; ReportError() ; sys.exit()

@@ -47,8 +47,8 @@ check_files_existence() {
     script_dir=$(dirname "$0")
 
     local files=(
-        "$script_dir/ghost-glitch.sh"
-        "$script_dir/ghost-glitch.py"
+        "$script_dir/ghost_glitch.sh"
+        "$script_dir/ghost_glitch.py"
         "$script_dir/README.md"
         "$script_dir/utils/B_handleDumpAirodump-ng.py"
         "$script_dir/utils/B_handleDumpAirodump-ng.py"
@@ -89,8 +89,8 @@ check_files_existence
 
 # Get the directory where the script is located
 script_dir=$(dirname "$0")
-# Append "/ghost-glitch.py" to the directory path
-script_path="$script_dir/ghost-glitch.py"
+# Append "/ghost_glitch.py" to the directory path
+script_path="$script_dir/ghost_glitch.py"
 
 # Check if lsb_release command is available
 if ! command -v lsb_release &> /dev/null; then

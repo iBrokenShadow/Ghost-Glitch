@@ -10,23 +10,29 @@ Contact for any Issues: Telegram  : https://t.me/iBrokenShadow
 visit https://ibrokenshadow.com
 -------------------------------------------------------------
 
-README : Make Sure to read ReadMe File first: 
-Bugs and Improvements will be done post reporting
+README : Make Sure to read ReadMe File first: /README.md
+Bugs and Improvements will be done Post Reporting
+
 
 
 ----------------WORKING & METHODOLOGY----------------
-It's a Wi-Fi Hacking Automated Tool, that can be used in suck many cases
+It's a -// Wi-Fi Hacking Automated Tool //-, With many in-built Features (STABLE)
 
-+ To Enable or Disable Monitor Mode (With Inbuilt Functions)
-+ TO Catch all wifi Networks on 2.4Ghz / 5Ghz or Both and then Make them in a categorized Manner to get most details out of them possible,
-  it then convert it to CSV and add WPS info if they have WPS enabled and if it's locked or not
+{+}  To Enable or Disable Monitor Mode (With Inbuilt Functions)
 
-+ Then Select a Network and it'll show all the details for that Specific BSSID, then you can start monitoring that and , It'll then Start 
-  De-authentication attack, with all connecetd clients sperately, and when Handshake get captured , it'll automatically stop and ask for further options
-  you can also not opt for deauthentication attack and perform any other way possible to get handhsake while this tool keeps capturing the packets 
+{+}  TO Catch all wifi Networks on 2.4Ghz / 5Ghz or Both and then Make them in a categorized Manner to get most details out of them possible,
+     it then convert it to CSV and add WPS info if they have WPS enabled and if it's locked or not
 
-+ More Features are getting added while I'm working on this
+{+}  Then Select a Network and it'll show all the details for that Specific BSSID, then you can start monitoring that and,
+     It'll then Start De-authentication attack, with all connecetd clients sperately || (OR all Connected Clients at Once / Not Recommended)
+  
+{+}  When Handshake get captured , it'll automatically stop and ask for further options
+     you can also not opt for deauthentication attack and perform any other way possible to get handhsake while this tool keeps capturing the packets 
+
+{+}  More Features are getting added while I'm working on this
 """
+
+
 
 # iBrokenShadow 
 # Made by Broken Shadow
@@ -228,7 +234,53 @@ def SmartLoading():
     while time.time() - start_time < 1:
         print(char) ; time.sleep(0.1) ; i += 1
     clear_lines(i)
- 
+    
+    
+    
+# Change Interface Name to Ghost        
+def change_interface_name(interface, new_name):
+    
+    def get_next_interface_name(base_name):
+        i = 0
+        while True:
+            if interface.endswith("mon"):
+                interface_name = f"{base_name}{i}mon"
+            else: interface_name = f"{base_name}{i}"
+            
+            if not check_interface_exists(interface_name):
+                return interface_name
+            i += 1
+
+    def check_interface_exists(interface_name):
+        try:
+            subprocess.check_output(['ip', 'link', 'show', interface_name])
+            return True
+        except subprocess.CalledProcessError:
+            return False
+
+    def rename_interface(interface, new_name):
+        try:
+            subprocess.run(['ip', 'link', 'set', interface, 'down'])
+            subprocess.run(['ip', 'link', 'set', interface, 'name', new_name])
+            subprocess.run(['ip', 'link', 'set', new_name, 'up'])
+        except Exception as e:
+            print(f"\n\n\n\nERROR 128: {e}")
+            time.sleep(0.2) ; ReportError() ; sys.exit(1)
+            
+            
+    # MAIN ASE
+    if interface[:5].lower() == "ghost":
+        try:
+            next_name = get_next_interface_name(new_name)
+            rename_interface(interface, next_name)
+            return next_name
+        except Exception as e:
+            print(f"\n\n\n\nERROR 1689: {e}")
+            time.sleep(0.2) ; ReportError() ; sys.exit(1)
+    else: return "none"
+
+    
+
           
 
 # ENABLE MONITOR MODE (IWCONFIG & AIRMON-NG)
@@ -289,7 +341,7 @@ def Enable_Monitor_Mode(interface):
     except KeyboardInterrupt:
         SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
     except Exception as e:
-        clear() ; text = f"ERROR: {1}" ; SlowType(text) ; ReportError() ; exit_pause()
+        clear() ; print("\n\n") ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
 
 
 
@@ -351,7 +403,7 @@ def disable_monitor_mode(interface):
         disable_monitor_mode_iwconfig(interface) ; modeOFmonitor = 1
         
     except Exception as e:
-        clear() ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
+        clear() ; print("\n\n") ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
     except KeyboardInterrupt:
         SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
 
@@ -421,7 +473,8 @@ def runDumpFile(res, ghz, path, selected_interface):
                 Del_Current_Line()
                 Enable_Monitor_Mode(selected_interface) ; j = 2
                 if modeOFmonitor == 0: selected_interface = selected_interface + "mon"
-                time.sleep(1)
+                print("\n\n")
+                loading_animation(f"Airodump-ng Starting on {ghz}... ", 1.5) ; Del_Current_Line()
 
         elif j == 2: 
             if k == 1:
@@ -484,16 +537,16 @@ try:
             bann_text()
             if looped == 1: SmartLoading()
             
-            text = O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n" + P ; print(text)
+            text = O+ f"[[ SELECTED INTERFACE: \"{selected_interface}\" ]]\n" + P ; print(text)
 
             # OPTION to Turn on Monitor Mode or Turn it Off or Dump
             time.sleep(0.4)
-            print("[+] Start Monitor Mode              " + O + "|1|" + P) ; time.sleep(0.04)
-            print("[+] Stop Monitor Mode               " + O + "|2|" + P) ; time.sleep(0.04)
-            print("[+] Airodump-ng on 2.4Ghz           " + O + "|3|" + P) ; time.sleep(0.04)
-            print("[+] Airodump-ng on 5.0Ghz           " + O + "|4|" + P) ; time.sleep(0.04)
-            print("[+] Airodump-ng on Both Channels    " + O + "|5|" + GR) ; time.sleep(0.04)
-            SlowType("\nResponse : ")
+            print("\n [+] Start Monitor Mode              " + O + "|1|" + P) ; time.sleep(0.04)
+            print(" [+] Stop Monitor Mode               " + O + "|2|" + P) ; time.sleep(0.04)
+            print(" [+] Airodump-ng on 2.4Ghz           " + O + "|3|" + P) ; time.sleep(0.04)
+            print(" [+] Airodump-ng on 5.0Ghz           " + O + "|4|" + P) ; time.sleep(0.04)
+            print(" [+] Airodump-ng on Both Channels    " + O + "|5|" + GR) ; time.sleep(0.04)
+            SlowType("\n\nResponse : ")
 
             try:
                 Del_Pre_Line()
@@ -511,7 +564,7 @@ try:
                         time.sleep(1) ; print("-----" *5)
                         subprocess.run(["iwconfig", selected_interface])
                         print("-----" *5) ; 
-                        
+
                         time.sleep(0.5)
                         text = R + "\n\nEnable Network Services: ~[sudo service NetworkManager start]~\n" + G ; SlowType(text)
                         DoIdisable(selected_interface) ; exit_pause()
@@ -525,6 +578,10 @@ try:
 
                 # Turn off monitor mode
                 elif res == 2:
+                    # Change Interface Name to wlan if it's Ghost
+                    abrakadabra = change_interface_name(selected_interface, "wlan")
+                    if abrakadabra != "none": selected_interface = abrakadabra
+                    
                     clear() ; bann_text()
                     print(O+ f"[[ Selected interface: \"{selected_interface}\" ]]\n.\n.\n" + GR)
                     disable_monitor_mode(selected_interface)
@@ -557,6 +614,9 @@ try:
         SlowType(R+ "\n\nNo connected interfaces found." + GR)
         exit_pause()
 
+except Exception as e:
+    print("\n\n")
+    text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
 
 except KeyboardInterrupt:
     time.sleep(0.3) ; ReportError() ; sys.exit()

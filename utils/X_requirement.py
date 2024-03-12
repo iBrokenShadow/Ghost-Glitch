@@ -56,8 +56,8 @@ def check_files_existence():
     script_dir_back = script_dir[:-5]
     
     files = [
-        os.path.join(script_dir_back, "ghost-glitch.sh"),
-        os.path.join(script_dir_back, "ghost-glitch.py"),
+        os.path.join(script_dir_back, "ghost_glitch.sh"),
+        os.path.join(script_dir_back, "ghost_glitch.py"),
         os.path.join(script_dir_back, "README.md"),
         os.path.join(script_dir, "B_handleDumpAirodump-ng.py"),
         os.path.join(script_dir, "B_handleDumpAirodump-ng.py"),
@@ -91,7 +91,7 @@ def check_installation():
     try:
         script_dir = os.path.dirname(os.path.realpath(__file__))
         script_dir_back = script_dir[:-5]
-        main_file = os.path.join(script_dir_back, "ghost-glitch.py")
+        main_file = os.path.join(script_dir_back, "ghost_glitch.py")
         
         # # Check if lsb_release command is available
         # subprocess.run(["lsb_release"], check=True)

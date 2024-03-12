@@ -466,7 +466,7 @@ def print_csv_file(filename):
                 formatted_cell = f'{colors[color_index]}{cell.ljust(width)}\033[0m'  # Reset color after each cell
                 formatted_row.append(formatted_cell)
             print(' | '.join(formatted_row))
-            time.sleep(0.04)
+            time.sleep(0.02)
 
         overwrite_csv_file(filename)
 
