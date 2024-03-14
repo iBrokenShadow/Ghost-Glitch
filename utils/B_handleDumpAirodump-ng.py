@@ -110,8 +110,7 @@ except:
     sys.exit(0)
 
 def exit_pause():
-    print("\n") ; input("Press Any Key to quit...") ; clear()
-    sys.exit()
+    print("\n") ; input("Press Any Key to quit...")
 
 def Del_Current_Line():
     sys.stdout.write("\r\033[K")
@@ -155,9 +154,9 @@ def SlowType(text):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
-        time.sleep(0.012)
+        time.sleep(0.01)
     print()  # Print a newline after printing the sentence slowly
-  
+
 # Fastly Type something instead of sudden print   
 def FastType(text):
     for char in text:
@@ -182,7 +181,112 @@ def enable_monitor_mode(interface):
 
 # MONITOR MODE DISABLE
 def disable_monitor_mode(interface):
-    x =0
+    global modeOFmonitorDisable
+    def disable_monitor_mode_iwconfig(interface):
+        texxt = "Turning Monitor Mode Off on : " + interface + " "
+        loading_animation(texxt, 1.5) ; Del_Current_Line()
+
+        subprocess.run(["sudo", "ifconfig", interface, "down"], check=True)
+        text = W+"\t[+] Interface ", interface, " Turned Down..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
+        subprocess.run(["sudo", "iwconfig", interface, "mode", "managed"], check=True)
+        text = "\t[+] Interface ", interface, " Mode Changed..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "ifconfig", interface, "up"], check=True)
+        text = "\t[+] Interface ", interface, " Turned UP..."
+        SlowType(text) ; time.sleep(1)
+
+        subprocess.run(["sudo", "service", "NetworkManager", "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        SlowType("\t[+] Network Manager service started..."+GR) ; time.sleep(1)
+        sys.stdout.write("\033[F\033[K" * 4)
+
+        clear() ; bann_text()
+        text = f"Monitor Mode Disabled on : {interface}\n"
+        SlowType(text)
+        time.sleep(1) ; print("-----" *5)
+        subprocess.run(["iwconfig", interface])
+        print("-----" *5) ; print("\n")
+                    
+    def disable_monitor_mode_airmonNG(interface):
+        print(W)
+        processCHECK = subprocess.run(["sudo", "airmon-ng", "stop", interface], check=True)
+        interface = interface[:-3]
+            
+        time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
+
+        text = f"Monitor Mode Disabled on : {interface}\n" ; SlowType(text)
+        subprocess.run(["iwconfig", interface])
+        print("-----" *5) ; print("\n")
+        
+        
+    
+    # MAIN ASE
+    try:
+        disable_monitor_mode_airmonNG(interface)
+        modeOFmonitor = 0
+        
+    except subprocess.CalledProcessError as e:
+        time.sleep(0.5) ; clear() ; bann_text() ; SmartLoading()
+        text = O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR ; SlowType(text)
+            
+        disable_monitor_mode_iwconfig(interface) ; modeOFmonitor = 1
+        
+    except Exception as e:
+        clear() ; print("\n\n") ; text = f"ERROR: {e}" ; SlowType(text) ; ReportError() ; exit_pause()
+    except KeyboardInterrupt:
+        SlowType("\n\n\nERROR: BYE") ; ReportError() ; exit_pause()
+
+
+# Change Interface Name to Ghost        
+def change_interface_name(interface, new_name):
+    
+    def get_next_interface_name(base_name):
+        i = 0
+        while True:
+            if interface.endswith("mon"):
+                interface_name = f"{base_name}{i}mon"
+            else: interface_name = f"{base_name}{i}"
+            
+            if not check_interface_exists(interface_name):
+                return interface_name
+            i += 1
+
+    def check_interface_exists(interface_name):
+        try:
+            subprocess.check_output(['ip', 'link', 'show', interface_name])
+            return True
+        except subprocess.CalledProcessError:
+            return False
+
+    def rename_interface(interface, new_name):
+        try:
+            subprocess.run(['ip', 'link', 'set', interface, 'down'])
+            subprocess.run(['ip', 'link', 'set', interface, 'name', new_name])
+            subprocess.run(['ip', 'link', 'set', new_name, 'up'])
+        except Exception as e:
+            print(f"\n\n\n\nERROR 128: {e}")
+            time.sleep(0.2) ; ReportError() ; sys.exit(1)
+            
+            
+    # MAIN ASE
+    if interface[:5].lower() == "ghost":
+        try:
+            next_name = get_next_interface_name(new_name)
+            rename_interface(interface, next_name)
+            return next_name
+        except Exception as e:
+            print(f"\n\n\n\nERROR 1689: {e}")
+            time.sleep(0.2) ; ReportError() ; sys.exit(1)
+    else: return "none"
+
+    
+
+
+
 
 # Check if Monitor Mode is already Enabled
 def is_monitor_mode_enabled(interface):
@@ -195,33 +299,6 @@ def is_monitor_mode_enabled(interface):
     except subprocess.CalledProcessError as e:
         print(f"Error checking monitor mode for {interface}: {e}")
         return False
-
-# USER RESPONSE ON DISBALING MONITOR MODE
-def DoIdisable(interface):
-    try:
-        user_input = input("(( Disable Monitor Mode? (y/n) ))  ") ; Del_Pre_Line()
-        if len(user_input) != 1:
-            print("ERROR! Input must be a single character...")
-            exit_pause()
-            
-        # Process the input here
-        if user_input.lower() == 'y':
-            # IF MONITOR MORE IS ALREADY DISABLED THERE
-            monitor_mode_enabled = is_monitor_mode_enabled(interface)
-            if monitor_mode_enabled == False:
-                loading_animation("Wait... ") ; Del_Current_Line()
-                print(f"Monitor Mode is already Disabled on interface : {interface}\n")
-                
-                time.sleep(1) ; print("-----" *5)
-                subprocess.run(["iwconfig", interface])
-                print("-----" *5) ; exit_pause()
-            else:
-                disable_monitor_mode(interface)
-            
-    except ValueError as e:
-        print("Error:", e)
-        time.sleep(0.2) ; ReportError() ; sys.exit(1)
-
 
 #------------------------------------------------------------------------------------------------------
 # DUMP BSSIDs command 
@@ -728,7 +805,8 @@ try:
     # subprocess.run(["mv", tempFilecSV, "-T", fileWithExtension, "-f"])
     
     #---------------------------------------------------------
-    subprocess.run("clear")
+    subprocess.run("clear") ; bann_text()
+    print(W+ "-"*124 + G)
     print_csv_file(fileWithExtension)
 
 
@@ -741,11 +819,18 @@ try:
         if i == 2:
             loading_animation("ERROR! Invalid Option...") ; Del_Current_Line()
         try:
-            line_number = int(input("\n\nWhich ESSID to Hit : "))
+            line_number = int(input("\n\n[+] Which ESSID to Hit : "))
             Del_Pre_Line() ; Del_Pre_Line() ; i = 2
         except ValueError:
             Del_Pre_Line() ; Del_Pre_Line() ; i = 1
             loading_animation("Invalid input. Please enter a number.") ; Del_Current_Line()
+        except KeyboardInterrupt:
+            Del_Current_Line() ; loading_animation("\tPlease wait, Fetching all Info... ") ; Del_Current_Line() ; print("\n\n")
+                    
+            print(O + f"\n\t~DETAILED INFO~\n" + G)                         ; time.sleep(0.4)
+            text = P + f"  [x] Airodump-ng Targets Dump ({res})    : ", W + "\""+CSVfilePath+"-01.csv\"" + G           ; SlowType(text)
+            text = P + f"  [x] Interface                         : ", W + interface + G          ; SlowType(text)
+            ReportError() ; sys.exit(0)
 
     entire_line, SelectedESSID, SelectedBSSID, SelectedChannel, Security, WPSinfo = extract_data(fileWithExtension, line_number)
 
@@ -754,7 +839,8 @@ try:
     SelectedBSSID = "".join(SelectedBSSID.split())
     SelectedChannel = "".join(SelectedChannel.split())
     
-    print(R + f"\n\t~SELECTED TARGET~\n" + G)                       ; time.sleep(0.4)
+    bann_text()
+    print(R + f"\n\t~[[ SELECTED TARGET ]]~\n" + G)                       ; time.sleep(0.4)
     text = C + f"  [+] ESSID    :", B + SelectedESSID + G           ; SlowType(text)
     text = C + f"  [+] BSSID    : ", G + SelectedBSSID + G          ; SlowType(text)
     text = C + f"  [+] CHANNEL  : ", O + str(SelectedChannel) + G   ; SlowType(text)
@@ -764,26 +850,26 @@ try:
 
     ############################# WORKING CURRENTLY
     # res = input("\nEnter to Start De-Authentication attack and Capture Handshake...\nor 'X' to Disable Monitor Mode! ")
-    print(G+ "\n\n     \t\t\t", "-"*30)
-    print("\t\t\t      --Select a Response--\n", "    \t\t\t", "-"*30)
+    text = G+ "\n\n     \t\t\t", "-"*30 ; SlowType(text)
+    text = "\t\t\t      --Select a Response--\n", "    \t\t\t", "-"*30 ; SlowType(text)
+    time.sleep(0.1)
     print("\n  [x] " + P + "Capture Handshake & Start De-auth Attack (All Connected Seperately)     " + O + "  | -> Press ENTER" + G)
+    time.sleep(0.1)
     print("  [x] " + P + "Capture Handshake & Start De-auth Attack (All Connected Clients at Once)  " + O + "| -> Press '2'" + G)
+    time.sleep(0.1)
     print("  [x] " + P + "Manual Mode || Close and print All Details" + O + "                                | -> Press '3'" + G)
+    time.sleep(0.1)
     print("  [x] " + P + "Disable Monitor Mode" + O + "                                                      | -> Press '4'" + G)
+    time.sleep(0.1)
     print("  [x] " + P + "Exit Program" + O + "                                                              | -> Press '5'" + G)
-    res = input("\n  -----------> ")
-    
-    # print(SelectedESSID)
-    # print(SelectedBSSID)
-    # print(SelectedChannel)
-    # print(len(SelectedESSID))
-    # print(len(SelectedBSSID))
-    # print(len(SelectedChannel)) ; input()
+    time.sleep(0.1)
+    SlowType("\n  -----------> ") ; Del_Pre_Line()
+    response = input("  -----------> ")
     
     
-    if res == '\n' or res == '':
-        SmartLoading() ; print("\n\n")
-        
+    print("\n\n") ; time.sleep(0.4)
+    
+    if response == '\n' or response == '' or response == '1':
         loading_animation("\tPlease wait, Starting Handshake Capture... ")
         Del_Current_Line() ; clear()
 
@@ -791,15 +877,47 @@ try:
         captureFile = path + "utils/C_captureHandshake.py"
         SlowType(P+ "Starting the ...\n" +GR) ; time.sleep(0.5) ; subprocess.run(["figlet" , "     DEMON"])
         
-        subprocess.run(['sudo', 'python', captureFile, interface, SelectedBSSID, SelectedChannel, path])
+        mode = '1'
+        subprocess.run(['sudo', 'python', captureFile, interface, SelectedBSSID, SelectedChannel, path, mode])
         sys.exit(0)
+        
+    elif response == '2':
+        loading_animation("\tPlease wait, Starting Handshake Capture... ")
+        Del_Current_Line() ; clear()
 
+        # python -u "scriptName.py" 'interface-name' 'BSSID' 'CHANNEL'
+        captureFile = path + "utils/C_captureHandshake.py"
+        SlowType(P+ "Starting the ...\n" +GR) ; time.sleep(0.5) ; subprocess.run(["figlet" , "     DEMON"])
+        
+        mode = 2
+        subprocess.run(['sudo', 'python', captureFile, interface, SelectedBSSID, SelectedChannel, path, mode])
+        sys.exit(0)
+        
+    elif response == '3':
+        loading_animation("\tPlease wait, Fetching all Info... ") ; Del_Current_Line() ; clear_lines(15)
+        
+        print(O + f"\n\t~DETAILED INFO~\n" + G)                         ; time.sleep(0.4)
+        text = P + f"  [x] Airodump-ng Targets Dump ({res})    : ", W + "\""+CSVfilePath+"-01.csv\"" + G           ; SlowType(text)
+        text = P + f"  [x] Interface                         : ", W + interface + G          ; SlowType(text)
+        exit_pause()
+    
+    elif response == '4':
+        loading_animation(f"\tPlease wait, Disabling Monitor Mode on {interface}... ") ; Del_Current_Line() ; clear_lines(15)
+        
+        abrakadabra = change_interface_name(interface, "wlan")
+        if abrakadabra != "none": interface = abrakadabra
+        clear() ; bann_text()
+        
+        print(O+ f"[[ Selected interface: \"{interface}\" ]]\n.\n.\n" + GR)
+        disable_monitor_mode(interface)
+        interface = interface[:-3]
+        exit_pause()
+        
     else:
-        # Show options to disable Monitor mode or Exit program
-        Del_Pre_Line() ; Del_Pre_Line()
-        DoIdisable(interface)
-        exit
+        time.sleep(0.2) ; ReportError() ; sys.exit(0)
 
+
+    time.sleep(0.2) ; ReportError() ; sys.exit(0)
 except KeyboardInterrupt:
     time.sleep(0.2) ; ReportError() ; sys.exit(1)
 

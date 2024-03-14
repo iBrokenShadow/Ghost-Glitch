@@ -59,6 +59,8 @@ def check_files_existence():
         os.path.join(script_dir_back, "ghost_glitch.sh"),
         os.path.join(script_dir_back, "ghost_glitch.py"),
         os.path.join(script_dir_back, "README.md"),
+        os.path.join(script_dir_back, "requirements.txt"),
+        
         os.path.join(script_dir, "B_handleDumpAirodump-ng.py"),
         os.path.join(script_dir, "B_handleDumpAirodump-ng.py"),
         os.path.join(script_dir, "C_captureHandshake.py"),

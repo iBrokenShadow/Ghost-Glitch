@@ -110,8 +110,9 @@ try:
     BSSID = sys.argv[2]
     CHANNEL = sys.argv[3]
     PythonFilepath = sys.argv[4]
+    mode = sys.argv[5]
 except:
-    print("SYNTAX ERROR!!!\n\nexample:\n\tpython -u \"scriptName.py\" 'interface-name' 'BSSID' 'CHANNEL' \"PATH TO ghostglitch.py File\"")
+    print("SYNTAX ERROR!!!\n\nexample:\n\tpython -u \"scriptName.py\" 'interface-name' 'BSSID' 'CHANNEL' \"PATH TO ghostglitch.py File\" 'mode [1 or 2]'")
     print("\n") ; 
     try: input("Press Any Key to quit...")
     except KeyboardInterrupt: sys.exit(0)
@@ -351,6 +352,7 @@ def change_interface_name(current_name, new_name):
 def PostDemon(isItCaptured):
     try:
         subprocess.run("clear")
+        bann_text()
         
         def printDecor():
             time.sleep(0.5)
@@ -361,11 +363,8 @@ def PostDemon(isItCaptured):
                 time.sleep(0.12)
                 print(O+ "." + GR) ; i+=1
         
-        print("1\n")
         postDmeonFile_Cap = PythonFilepath +"utils/postdemon_Cap.py"
-        print("1\n")
         postDmeonFile_NotCap = PythonFilepath +"utils/postdemon_NoCap.py"
-        print("1\n")
         
         # CHECK IF HANDSHAKE ACTUALLY CAPTURED OR NOT
         if isItCaptured == "DONE":          # HANDHSHAKE CAPTURED

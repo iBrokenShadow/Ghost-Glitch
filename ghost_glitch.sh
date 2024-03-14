@@ -50,7 +50,7 @@ check_files_existence() {
         "$script_dir/ghost_glitch.sh"
         "$script_dir/ghost_glitch.py"
         "$script_dir/README.md"
-        "$script_dir/utils/B_handleDumpAirodump-ng.py"
+        "$script_dir/requirements.txt"
         "$script_dir/utils/B_handleDumpAirodump-ng.py"
         "$script_dir/utils/C_captureHandshake.py"
         "$script_dir/utils/X_requirement.py"
