@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
@@ -366,6 +367,12 @@ def PostDemon(isItCaptured):
         postDmeonFile_Cap = PythonFilepath +"utils/postdemon_Cap.py"
         postDmeonFile_NotCap = PythonFilepath +"utils/postdemon_NoCap.py"
         
+        
+        ############################
+        # ---------------------------------------------------------------------------------------------
+        ############################ 
+        
+        
         # CHECK IF HANDSHAKE ACTUALLY CAPTURED OR NOT
         if isItCaptured == "DONE":          # HANDHSHAKE CAPTURED
             clear() ; bann_text() ; printDecor()
@@ -374,9 +381,32 @@ def PostDemon(isItCaptured):
             text = G + "\n [+] Captured Files    : " + W + f"\"{path}\"" + W ; FastType(text)
             airodumpFile = path[:-20] + "airodumped_BS_list-01.csv"
             text = G + " [+] Airodump-ng Dumps : " + W + f"\"{airodumpFile}\"" + W ; FastType(text)
-            # input("HI") ; input("Second HI")
+            text = G + " [+] Handshake File    : " + W + f"\"{path}glitched-01.cap\"" + W ; FastType(text)
+            print("\n\n")
+            
+            text = G+ "\t\t", "-"*30 ; SlowType(text)
+            text = C+ "\t\t\t--What Next?--\n", "\t\t", "-"*30 ; SlowType(text)
+            time.sleep(0.1)
+            print("\n  [x] " + P + "Start Dictionary Attack (Aircrack-ng)" + O + "            | -> Press ENTER" + G)
+            time.sleep(0.1)
+            print("  [x] " + P + "Manual Mode || Exit and print All Details" + O + "        | -> Press '2'" + G)
+            time.sleep(0.1)
+            print("  [x] " + P + "Start Wifi Analyzer Using WireShark (Work in P)" + O + "  | -> Press '3'" + G)
+            time.sleep(0.1)
+            print("  [x] " + P + "Start Hitting Another Target" + O + "                     | -> Press '4'" + G)
+            time.sleep(0.1)
+            print("  [x] " + P + "Disable Monitor Mode & Exit" + O + "                      | -> Press '5'" + G)
+            time.sleep(0.1)
+            SlowType("\n  -----------> ") ; Del_Pre_Line()
+            response = input("  -----------> ")
             
             
+            
+        ############################
+        # ---------------------------------------------------------------------------------------------
+        ############################ 
+        
+           
                     
         else:                       # HANDHSHAKE NOT CAPTURED XXXX
             print("\n") ; printDecor()
@@ -385,8 +415,15 @@ def PostDemon(isItCaptured):
             airodumpFile = path[:-20] + "airodumped_BS_list-01.csv"
             text = R + " [+] Airodump-ng Dumps : " + W + f"\"{airodumpFile}\"" + W ; FastType(text)
             
-            time.sleep(0.5) ; input("\n...Try Again or Debug issues with Adapter / Use different Techiniques")
+            time.sleep(0.5) ; input("\n\n...Try Again or Debug issues with Adapter / Use different Techiniques")
             
+            
+            
+        ############################
+        # ---------------------------------------------------------------------------------------------
+        ############################ 
+        
+        
             
         
     except KeyboardInterrupt:
@@ -409,6 +446,22 @@ def PostDemon(isItCaptured):
 #######################################################################################################
 
 try:
+    # text = G+ "\t\t", "-"*30 ; SlowType(text)
+    # text = C+ "\t\t\t--What Next?--\n", "\t\t", "-"*30 ; SlowType(text)
+    # time.sleep(0.1)
+    # print("\n  [x] " + P + "Start Dictionary Attack (Aircrack-ng)" + O + "            | -> Press ENTER" + G)
+    # time.sleep(0.1)
+    # print("  [x] " + P + "Manual Mode || Exit and print All Details" + O + "        | -> Press '2'" + G)
+    # time.sleep(0.1)
+    # print("  [x] " + P + "Start Wifi Analyzer Using WireShark (Work in P)" + O + "  | -> Press '3'" + G)
+    # time.sleep(0.1)
+    # print("  [x] " + P + "Start Hitting Another Target" + O + "                     | -> Press '4'" + G)
+    # time.sleep(0.1)
+    # print("  [x] " + P + "Disable Monitor Mode & Exit" + O + "                      | -> Press '5'" + G)
+    # time.sleep(0.1)
+    # SlowType("\n  -----------> ") ; Del_Pre_Line()
+    # response = input("  -----------> ")
+
     
     RES = 0 ; requirements()
     # PythonFilepath = os.path.abspath(os.path.dirname(__file__)) + "/"
@@ -417,16 +470,18 @@ try:
 
     CSVfilePath = PythonFilepath + "airodumped_BS_list-01.csv"
     path = PythonFilepath + "CaptureHandshake_BS" + "/"
-    CAPfileName = path + "CaptureHandshakke_BS_list"
+    CAPfileName = path + "glitched"
     
-    files = [current_directory+"CaptureHandshakke_BS_list-01.csv", current_directory+"CaptureHandshakke_BS_list-01.cap", current_directory+"CaptureHandshakke_BS_list-01.log.csv", current_directory+"CaptureHandshakke_BS_list-01.kismet.csv", current_directory+"CaptureHandshakke_BS_list-01.kismet.netxml"]
+    files = [current_directory+"glitched-01.csv", current_directory+"glitched-01.cap", current_directory+"glitched-01.log.csv", current_directory+"glitched-01.kismet.csv", current_directory+"glitched-01.kismet.netxml"]
     filesH = [CAPfileName+"-01.csv", CAPfileName+"-01.cap", CAPfileName+"-01.log.csv", CAPfileName+"-01.kismet.csv", CAPfileName+"-01.kismet.netxml"]
     
     # Remove All files Necessary and Create the Folder to place all files
     try:
+        subprocess.run(["rm", "-r", path, "--force"])
         for file in files: os.remove(file)
     except: pass
     try:
+        for fileh in filesH: subprocess.run(["rm", "-r", fileh, "--force"])
         for fileh in filesH: os.remove(fileh)
     except: pass
     
@@ -449,8 +504,8 @@ try:
 
 
     # # Command 1: Run airodump-ng in the current terminal
-    # print(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one']) ; input()
-    proc1 = subprocess.Popen(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "CaptureHandshakke_BS_list", '--write-interval', '1', '--ignore-negative-one'], stdout=subprocess.PIPE, text=True) ##### , '--write-interval', '1', '--ignore-negative-one'
+    # print(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "glitched", '--write-interval', '1', '--ignore-negative-one']) ; input()
+    proc1 = subprocess.Popen(["airodump-ng", INTERFACE, "--bssid", BSSID, "--channel", CHANNEL, "--write", "glitched", '--write-interval', '1', '--ignore-negative-one'], stdout=subprocess.PIPE, text=True) ##### , '--write-interval', '1', '--ignore-negative-one'
     RES = 1                     
                                                                                                                     
     
@@ -466,10 +521,11 @@ try:
     # Monitor output of command 1
     while True:
         line = proc1.stdout.readline().strip()
-        
         print(line)  # Print the output of command 1
+        
         if "handshake" in line.lower():  # Check if the word "handshake" is in the line
-            proc2.kill() ; proc1.kill()
+            proc2.terminate() ; proc1.terminate()
+            # proc2.kill() ; proc1.kill()
             break
         
     if RES==1: 
@@ -496,13 +552,15 @@ try:
 
 
 except KeyboardInterrupt:
-    #subprocess.run("clear")
-    if RES==1: 
-        moveFilestoPath(files)
-        PostDemon("NOT_DONE")
+    try:
+        if RES==1: 
+            moveFilestoPath(files)
+            PostDemon("NOT_DONE")
         
-    proc2.kill() ; proc1.kill()
-    time.sleep(0.2) ; ReportError() ; sys.exit()
+        proc2.kill() ; proc1.kill()
+        time.sleep(0.2) ; ReportError() ; sys.exit()
+    except:
+        time.sleep(0.2) ; ReportError() ; sys.exit()
     
 except Exception as e:
     proc2.kill() ; proc1.kill()
