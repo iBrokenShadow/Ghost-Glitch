@@ -102,6 +102,15 @@ def ReportError():
     
     
     
+    
+# REQUIREMENTS
+def requirements():
+    try: 
+        if requirements_satisfied == False: sys.exit(1)
+    except KeyboardInterrupt: sys.exit(1)
+    except: sys.exit(1)
+requirements() ; 
+    
 
 def run(cmd):
     subprocess.run(cmd)
@@ -128,6 +137,7 @@ def FastType(text):
     print()  # Print a newline after printing the sentence slowly
     
     
+    
 
 if is_run_with_sudo() == False:
     run(["figlet", "ERROR !!!"])
@@ -135,12 +145,7 @@ if is_run_with_sudo() == False:
     print("\n") ; input("Press Any Key to quit..") ; print(GR)
     sys.exit()
 
-# REQUIREMENTS
-def requirements():
-    try: 
-        if requirements_satisfied == False: sys.exit(0)
-    except KeyboardInterrupt: sys.exit(0)
-    except: sys.exit(0)
+
 
 
 
@@ -491,7 +496,7 @@ def runDumpFile(res, ghz, path, selected_interface):
 try:
     clear()
     # SlowType("", 0.02)
-    requirements() ; bann_text() # ; global selected_interface
+    bann_text() # ; global selected_interface
     # Get path exact name where the script is stored
     path = os.path.abspath(os.path.dirname(__file__)) + "/"
     connected_interfaces = list_connected_interfaces()

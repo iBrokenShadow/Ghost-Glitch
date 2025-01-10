@@ -2,7 +2,7 @@
   <br>
   <a href="https://github.com/iBrokenShadow/GhostGlitch"><img src="https://i.ibb.co/F4HBKqm/TBomb.png" alt="GhostGlitch"></a>
   <br>
-  GhostGlitch v1.40
+  GhostGlitch v1.98
   <br>
 </h1>
 

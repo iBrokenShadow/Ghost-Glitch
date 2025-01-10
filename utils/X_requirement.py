@@ -99,8 +99,11 @@ def check_installation():
         # subprocess.run(["lsb_release"], check=True)
 
         # Check the distribution ID
-        distribution = subprocess.run(["lsb_release", "-si"], capture_output=True, text=True, check=True).stdout.strip()
-
+        try:
+            distribution = subprocess.run(["lsb_release", "-si"], capture_output=True, text=True, check=True).stdout.strip()
+        except:
+            distribution = "dsdsd"
+            
         # Define the list of Debian-based distributions
         debian_based = ["Debian", "Kali", "Ubuntu", "Parrot"]
 
